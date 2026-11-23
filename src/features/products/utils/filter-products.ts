@@ -28,7 +28,7 @@ export function filterAndSortProducts(products: Product[], filters: ProductFilte
 }
 export function getProductFilterChips(filters: ProductFilters): string[] {
   const chips: string[] = [];
-  if (filters.minPrice > 0 || Number.isFinite(filters.maxPrice)) chips.push(`Price: ${filters.minPrice}–${Number.isFinite(filters.maxPrice) ? filters.maxPrice : "Any"}`);
+  if (filters.minPrice > 0 || Number.isFinite(filters.maxPrice)) chips.push(`Price: ₹${filters.minPrice.toLocaleString("en-IN")}–${Number.isFinite(filters.maxPrice) ? "₹"+filters.maxPrice.toLocaleString("en-IN") : "Any"}`);
   if (filters.minRating > 0) chips.push(`${filters.minRating}+ stars`);
   if (filters.availability !== "all") chips.push(filters.availability === "in-stock" ? "In stock" : "Out of stock");
   if (filters.onSaleOnly) chips.push("On sale");
