@@ -10,7 +10,7 @@ export const DEFAULT_FILTERS: ProductFilters = {
   availability: "all", onSaleOnly: false, brands: [], categories: [], sort: "relevance",
 };
 export function filterAndSortProducts(products: Product[], filters: ProductFilters): Product[] {
-  return products.filter((p) => p.price >= filters.minPrice && p.price <= filters.maxPrice &&
+  return products.filter((p) => p.price * 85 >= filters.minPrice && p.price * 85 <= filters.maxPrice &&
     p.rating >= filters.minRating &&
     (filters.availability === "all" || (filters.availability === "in-stock" ? p.stock > 0 : p.stock <= 0)) &&
     (!filters.onSaleOnly || p.discountPercentage > 0) &&
