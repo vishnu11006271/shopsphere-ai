@@ -9,7 +9,8 @@ import { useAuthStore } from "@/features/auth/store/auth-store";
 
 function AccountContent() {
   const router = useRouter();
-  const user = useAuthStore((state) => state.getCurrentUser());
+  const getCurrentUser = useAuthStore((state) => state.getCurrentUser);
+  const user = getCurrentUser();
   const logout = useAuthStore((state) => state.logout);
   return <main className="min-h-screen px-5 py-12"><div className="mx-auto max-w-4xl"><Link href="/" className="text-sm text-brand hover:underline">← Back to storefront</Link>
     <section className="mt-8 rounded-[2rem] bg-white p-8 shadow-soft md:p-12"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-widest text-brand">Your account</p><h1 className="mt-3 text-3xl font-semibold">Hello, {user?.name}</h1><p className="mt-2 text-muted">{user?.email}</p></div><Button variant="secondary" onClick={()=>{logout();router.replace("/");}}><LogOut size={16} className="mr-2"/> Sign out</Button></div>
