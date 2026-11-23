@@ -30,7 +30,7 @@ npm run build
 Install the Playwright browser once with `npx playwright install chromium`.
 
 ## Current implementation status
-Phase 01 foundation is merged to `main`. Phase 02 authentication is implemented on `feature/authentication`: local customer registration, login, PBKDF2 password derivation, seven-day mock sessions persisted in browser storage, logout, and role-aware protected routes for account, customer dashboard, checkout, orders, and admin. The remaining PRD modules (full discovery/search, PDP, cart/checkout behavior, wishlist, order lifecycle, reviews, recommendation strategies, assistant, and admin operations) are planned as subsequent feature branches.
+Phase 01 foundation and Phase 02 authentication are merged to `main`. Phase 03 product discovery is implemented on `feature/product-discovery`: DummyJSON catalogue/category/search integration, responsive product grid, combined filters, sorting, client pagination, debounced product/category suggestions, recent searches, URL-synchronized search/filter state, wishlist toggles, quick view, and 2–4 product comparison. Product detail, full cart/checkout, order lifecycle, reviews, recommendation strategies, assistant, and admin operations remain planned phases.
 
 ## Scope and safety
 - Checkout is a simulation only; never enter real payment information.
