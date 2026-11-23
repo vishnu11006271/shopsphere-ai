@@ -8,7 +8,6 @@ import { productKeys, productService } from "@/features/products/services/produc
 import { ProductCard } from "@/components/ui/product-card";
 import { useCartStore } from "@/store/cart-store";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { SearchBar } from "@/features/search/components/search-bar";
 
 export default function HomePage() {
