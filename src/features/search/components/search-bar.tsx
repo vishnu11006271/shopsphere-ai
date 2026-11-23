@@ -9,6 +9,7 @@ import { useSearchHistoryStore } from "@/features/search/store/search-history-st
 const POPULAR_SEARCHES = ["wireless headphones","skincare","laptops","sneakers"];
 export function SearchBar({initialQuery="",compact=false}:{initialQuery?:string;compact?:boolean}) {
  const router=useRouter(); const [value,setValue]=useState(initialQuery); const [debounced,setDebounced]=useState(initialQuery); const [focused,setFocused]=useState(false); const wrapper=useRef<HTMLDivElement>(null);
+ useEffect(()=>{setValue(initialQuery);setDebounced(initialQuery);},[initialQuery]);
  const searches=useSearchHistoryStore(s=>s.searches); const addSearch=useSearchHistoryStore(s=>s.add); const clearSearches=useSearchHistoryStore(s=>s.clear);
  useEffect(()=>{const timer=window.setTimeout(()=>setDebounced(value.trim()),350);return()=>window.clearTimeout(timer);},[value]);
  const {data}=useQuery({queryKey:productKeys.discovery(debounced,""),queryFn:({signal})=>productService.discover(debounced,"",signal),enabled:debounced.length>=2&&focused,staleTime:60_000});
