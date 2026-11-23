@@ -9,7 +9,7 @@ export function ProductFiltersPanel({ products, filters, onChange, onClear }: {
   onChange: (next: ProductFilters) => void;
   onClear: () => void;
 }) {
-  const brands = Array.from(new Set(products.map((product) => product.brand).filter((value): value is string => Boolean(value))).sort();
+  const brands = Array.from(new Set(products.map((product) => product.brand).filter((value): value is string => Boolean(value)))).sort();
   const categories = Array.from(new Set(products.map((product) => product.category))).sort();
   const maxPrice = Math.max(1000, ...products.map((product) => Math.ceil(product.price * 85 / 100) * 100));
   const patch = (value: Partial<ProductFilters>) => onChange({ ...filters, ...value });
