@@ -15,7 +15,17 @@ import type { Product } from "@/types/product";
 
 const PAGE_SIZE=12;
 function readFilters(params:URLSearchParams):ProductFilters {
- return {minPrice:Math.max(0,Number(params.get("minPrice")??0)),maxPrice:params.has("maxPrice")?Math.max(0,Number(params.get("maxPrice"))):Number.POSITIVE_INFINITY,minRating:Number(params.get("rating")??0),availability:(params.get("stock")??"all") as ProductFilters["availability"],onSaleOnly:params.get("sale")==="1",brands:params.getAll("brand"),categories:params.getAll("category"),sort:(params.get("sort")??"relevance") as ProductFilters["sort"]};
+ const minRaw=Number(params.get("minPrice")??0);
+ const maxRaw=Number(params.get("maxPrice")??Number.POSITIVE_INFINITY);
+ const ratingRaw=Number(params.get("rating")??0);
+ const stockRaw=params.get("stock")??"all";
+ const sortRaw=params.get("sort")??"relevance";
+ const minPrice=Number.isFinite(minRaw)?Math.max(0,minRaw):0;
+ const maxPrice=Number.isFinite(maxRaw)?Math.max(minPrice,maxRaw):Number.POSITIVE_INFINITY;
+ const minRating=[0,3,4,4.5].includes(ratingRaw)?ratingRaw:0;
+ const availability=["all","in-stock","out-of-stock"].includes(stockRaw)?stockRaw as ProductFilters["availability"]:"all";
+ const sort=["relevance","price-asc","price-desc","rating","newest"].includes(sortRaw)?sortRaw as ProductFilters["sort"]:"relevance";
+ return {minPrice,maxPrice,minRating,availability,onSaleOnly:params.get("sale")==="1",brands:params.getAll("brand"),categories:params.getAll("category"),sort};
 }
 function DiscoveryContent({categorySlug=""}:{categorySlug?:string}) {
  const router=useRouter();const pathname=usePathname();const searchParams=useSearchParams();const paramsString=searchParams.toString();
