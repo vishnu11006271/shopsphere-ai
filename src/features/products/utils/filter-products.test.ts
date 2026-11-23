@@ -11,6 +11,9 @@ describe("filterAndSortProducts",()=>{
   const result=filterAndSortProducts(fixture,{...DEFAULT_FILTERS,minPrice:2000,maxPrice:5000,minRating:4,availability:"in-stock",categories:["mens-shoes"]});
   expect(result.map(p=>p.id)).toEqual([1]);
  });
+ it("preserves the API order for relevance sorting",()=>{
+  expect(filterAndSortProducts(fixture,DEFAULT_FILTERS).map(p=>p.id)).toEqual([1,2,3]);
+ });
  it("sorts matching products by price ascending and descending",()=>{
   expect(filterAndSortProducts(fixture,{...DEFAULT_FILTERS,sort:"price-asc"}).map(p=>p.id)).toEqual([3,1,2]);
   expect(filterAndSortProducts(fixture,{...DEFAULT_FILTERS,sort:"price-desc"}).map(p=>p.id)).toEqual([2,1,3]);
