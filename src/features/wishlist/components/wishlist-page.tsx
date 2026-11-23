@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Heart, RefreshCw, ShoppingBag, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,7 @@ export function WishlistPage() {
   const snapshotById = useMemo(() => new Map(snapshots.map((item) => [item.id, item])), [snapshots]);
   const liveById = useMemo(() => new Map((data?.products ?? []).map((item) => [item.id, item])), [data]);
   const wishlistProducts = productIds.map((id) => ({ id, product: liveById.get(id) ?? snapshotById.get(id), isMissing: Boolean(data && !liveById.has(id)) }));
+  useEffect(() => { if (data) for (const id of productIds) { const product = liveById.get(id); if (product) saveProduct(product); } }, [data, productIds, liveById, saveProduct]);
   const categories = new Set(wishlistProducts.map((entry) => entry.product?.category).filter(Boolean));
   const suggestions = (data?.products ?? []).filter((product) => product.stock > 0 && !productIds.includes(product.id) && categories.has(product.category)).slice(0,4);
 

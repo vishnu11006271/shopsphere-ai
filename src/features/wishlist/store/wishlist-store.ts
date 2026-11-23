@@ -13,7 +13,7 @@ interface WishlistState {
   saveProduct: (product: Product) => void;
   setHasHydrated: (value: boolean) => void;
 }
-export const useWishlistStore = create<WishlistState>()(persist((set, get) => ({
+export const useWishlistStore = create<WishlistState>()(persist((set) => ({
   productIds: [],
   productSnapshots: [],
   hasHydrated: false,

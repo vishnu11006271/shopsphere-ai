@@ -21,7 +21,7 @@ describe("cart calculations and coupons", () => {
     expect(validateCoupon("WELCOME15", 1000)).toMatchObject({ valid: false, reason: "minimum" });
   });
   it("charges standard simulated shipping below the free threshold", () => {
-    const one: CartLine[] = [{ ...lines[0], quantity: 1 }];
+    const one: CartLine[] = [{ ...lines[0], product: { ...lines[0].product, price: 10 }, quantity: 1 }];
     expect(calculateCartTotals(one, null).shipping).toBe(99);
   });
 });
