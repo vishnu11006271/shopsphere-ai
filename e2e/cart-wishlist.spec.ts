@@ -7,6 +7,8 @@ test("product can be added to cart and quantity controls update", async ({ page 
   await expect(page.getByRole("heading", { name: "Your cart" })).toBeVisible();
   await expect(page.getByText("Subtotal")).toBeVisible();
   await expect(page.getByRole("button", { name: /Increase/ })).toBeVisible();
+  await page.getByRole("button", { name: /Increase/ }).click();
+  await expect(page.locator('[aria-label="Quantity"]')).toHaveText("2");
 });
 
 test("wishlist preserves saved products and can move an in-stock product to cart", async ({ page }) => {
