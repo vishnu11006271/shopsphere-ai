@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check, ChevronLeft, ChevronRight, Heart, Info, Minus, PackageCheck, Plus, ShieldCheck, ShoppingBag, Star, Truck } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Heart, Info, Minus, PackageCheck, Plus, ShieldCheck, ShoppingBag, Star, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/store/cart-store";
 import { useWishlistStore } from "@/features/wishlist/store/wishlist-store";
@@ -68,7 +68,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
   const [deliveryMessage, setDeliveryMessage] = useState("");
   const [zoomOpen, setZoomOpen] = useState(false);
 
-  const variant = product?.variants?.find((item) => item.id === selectedVariantId);
+  const variant = product?.variants?.find((item) => item.id === selectedVariantId) ?? product?.variants?.find((item) => item.stock > 0) ?? product?.variants?.[0];
   const availableStock = product ? getSelectedStock(product, variant) : 0;
   const images = useMemo(() => product ? Array.from(new Set([product.thumbnail, ...product.images].filter(Boolean))) : [], [product]);
   const related = useMemo(() => (relatedData?.products ?? []).filter((item) => item.id !== productId), [relatedData, productId]);
@@ -103,7 +103,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
         <div className="mt-6 flex flex-wrap items-baseline gap-3"><span className="text-3xl font-bold">{formatINR(getDiscountedPrice(product)*85)}</span>{product.discountPercentage>0&&<><span className="text-lg text-muted line-through">{formatINR(product.price*85)}</span><span className="rounded-full bg-[#f4e7d1] px-3 py-1 text-xs font-bold text-[#8b5a13]">Save {Math.round(product.discountPercentage)}%</span></>}</div>
         <p className="mt-3 text-xs text-muted">Displayed INR amount is an illustrative conversion of the mock catalogue price, not a live exchange-rate quote.</p>
         <div className="mt-7 border-t border-black/10 pt-6">
-          {product.variants?.length ? <div><p className="text-sm font-semibold">Choose a variant</p><div className="mt-3 flex flex-wrap gap-2">{product.variants.map((item)=><button key={item.id} type="button" disabled={item.stock<1} aria-pressed={selectedVariantId===item.id} onClick={()=>{setSelectedVariantId(item.id);setQuantity(1);}} className={`rounded-full border px-4 py-2 text-sm transition disabled:cursor-not-allowed disabled:opacity-35 ${selectedVariantId===item.id?"border-brand bg-brand text-white":"border-black/15 bg-white hover:border-brand"}`}>{item.value}{item.stock<1?" · Unavailable":""}</button>)}</div></div> : <p className="text-sm text-muted">No selectable variants are supplied for this catalogue item.</p>}
+          {product.variants?.length ? <div><p className="text-sm font-semibold">Choose a variant</p><div className="mt-3 flex flex-wrap gap-2">{product.variants.map((item)=><button key={item.id} type="button" disabled={item.stock<1} aria-pressed={selectedVariantId===item.id || (!selectedVariantId && variant?.id===item.id)} onClick={()=>{setSelectedVariantId(item.id);setQuantity(1);}} className={`rounded-full border px-4 py-2 text-sm transition disabled:cursor-not-allowed disabled:opacity-35 ${selectedVariantId===item.id?"border-brand bg-brand text-white":"border-black/15 bg-white hover:border-brand"}`}>{item.value}{item.stock<1?" · Unavailable":""}</button>)}</div></div> : <p className="text-sm text-muted">No selectable variants are supplied for this catalogue item.</p>}
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3"><div><p className="text-sm font-semibold">Quantity</p><p className="mt-1 text-xs text-muted">{stockLabel}</p></div><div className="flex items-center rounded-full bg-white p-1 shadow-soft"><button type="button" aria-label="Decrease quantity" disabled={quantity<=1||availableStock<1} onClick={()=>changeQuantity(quantity-1)} className="grid size-9 place-items-center rounded-full hover:bg-canvas disabled:opacity-35"><Minus size={15}/></button><span className="w-10 text-center text-sm font-semibold" aria-live="polite">{quantity}</span><button type="button" aria-label="Increase quantity" disabled={quantity>=availableStock} onClick={()=>changeQuantity(quantity+1)} className="grid size-9 place-items-center rounded-full hover:bg-canvas disabled:opacity-35"><Plus size={15}/></button></div></div>
           {availableStock<1&&<p role="status" className="mt-3 text-sm font-medium text-rose-600">This selection is out of stock. Choose an available variant if one is listed.</p>}
           <div className="mt-5 grid gap-3 sm:grid-cols-2"><Button disabled={availableStock<1} onClick={addToCart} className="w-full"><ShoppingBag size={17}/> Add to Cart</Button><Button variant="secondary" disabled={availableStock<1} onClick={buyNow} className="w-full">Buy Now</Button></div>
