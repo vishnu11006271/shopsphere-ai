@@ -7,6 +7,8 @@ export const productKeys = {
   catalogue: ["products", "catalogue"] as const,
   categories: ["products", "categories"] as const,
   discovery: (query: string, category: string) => ["products", "discovery", query, category] as const,
+  detail: (id: number) => ["products", "detail", id] as const,
+  related: (category: string, excludeId: number) => ["products", "related", category, excludeId] as const,
 };
 
 export const productService = {

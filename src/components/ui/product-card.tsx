@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { Heart, ShoppingBag, Star } from "lucide-react";
 import { useWishlistStore } from "@/features/wishlist/store/wishlist-store";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,7 @@ export function ProductCard({ product }: { product: Product }) {
     </div>
     <div className="px-2 pb-2 pt-4">
       <p className="text-xs capitalize tracking-wide text-muted">{product.category}</p>
-      <h3 className="mt-1 min-h-10 line-clamp-2 text-sm font-semibold text-ink">{product.title}</h3>
+      <h3 className="mt-1 min-h-10 line-clamp-2 text-sm font-semibold text-ink"><Link href={`/products/${product.id}`} className="hover:text-brand">{product.title}</Link></h3>
       <div className="mt-2 flex items-center gap-1 text-xs text-muted"><Star size={13} className="fill-accent text-accent" /> {product.rating.toFixed(1)} <span>·</span> {product.stock > 0 ? "In stock" : "Out of stock"}</div>
       <div className="mt-4 flex items-center justify-between gap-2"><span className="font-bold">{formatINR(product.price * 85)}</span><Button aria-label={`Add ${product.title} to cart`} disabled={product.stock < 1} className="!px-3 !py-2" onClick={() => addItem(product)}><ShoppingBag size={16} /></Button></div>
     </div>
