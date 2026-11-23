@@ -12,7 +12,7 @@ import { useWishlistStore } from "@/features/wishlist/store/wishlist-store";
 import { productKeys, productService } from "@/features/products/services/product-service";
 import { clampProductQuantity, estimateDelivery, getDiscountedPrice, getSelectedStock } from "@/features/products/utils/product-detail";
 import { formatINR } from "@/lib/utils";
-import type { Product, ProductVariant } from "@/types/product";
+import type { Product } from "@/types/product";
 
 type Tab = "description" | "specifications";
 
@@ -77,7 +77,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
   const recommended = useMemo(() => (featuredData?.products ?? []).filter((item) => item.id !== productId).slice(0,4), [featuredData, productId]);
 
   if (isPending) return <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6"><div className="h-5 w-32 animate-pulse rounded bg-stone-200"/><div className="mt-8 grid gap-8 lg:grid-cols-2"><div className="aspect-square animate-pulse rounded-3xl bg-stone-200"/><div className="space-y-4"><div className="h-8 w-3/4 animate-pulse rounded bg-stone-200"/><div className="h-5 w-1/3 animate-pulse rounded bg-stone-200"/><div className="h-32 animate-pulse rounded bg-stone-200"/></div></div></main>;
-  if (isError || !product) return <main className="mx-auto grid min-h-[65vh] max-w-xl place-content-center px-5 text-center"><div className="mx-auto grid size-14 place-items-center rounded-full bg-rose-50 text-rose-600"><Info/></div><h1 className="mt-5 text-2xl font-bold">We couldn't load this product</h1><p className="mt-2 text-sm text-muted">The product may be unavailable, or the connection may have failed.</p><div className="mt-6 flex justify-center gap-3"><Button variant="secondary" onClick={() => router.back()}>Go back</Button><Button onClick={() => void refetch()}>Try again</Button></div></main>;
+  if (isError || !product) return <main className="mx-auto grid min-h-[65vh] max-w-xl place-content-center px-5 text-center"><div className="mx-auto grid size-14 place-items-center rounded-full bg-rose-50 text-rose-600"><Info/></div><h1 className="mt-5 text-2xl font-bold">We couldn&apos;t load this product</h1><p className="mt-2 text-sm text-muted">The product may be unavailable, or the connection may have failed.</p><div className="mt-6 flex justify-center gap-3"><Button variant="secondary" onClick={() => router.back()}>Go back</Button><Button onClick={() => void refetch()}>Try again</Button></div></main>;
 
   const stockLabel = availableStock > 0 ? `${availableStock} available` : "Out of stock";
   const addToCart = () => { if (availableStock < 1) return; addItem(product, variant, quantity); };
