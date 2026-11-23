@@ -9,7 +9,7 @@ test("product discovery route renders catalogue and filter controls", async ({ p
 
 test("search submits a query to a shareable results URL", async ({ page }) => {
   await page.goto("/products");
-  await page.getByRole("searchbox", { name: "Search products" }).fill("phone");
+  await page.getByRole("textbox", { name: "Search products" }).fill("phone");
   await page.getByRole("button", { name: "Search", exact: true }).click();
   await expect(page).toHaveURL(/\/search\?q=phone/);
   await expect(page.getByRole("heading", { name: "Results for “phone”" })).toBeVisible();
