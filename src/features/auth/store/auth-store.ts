@@ -8,8 +8,8 @@ import { demoPasswordSalt, hashPassword, verifyPassword } from "../services/pass
 
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const demoUsers: AuthUser[] = [
-  { id: "demo-customer", name: "Demo Customer", email: "customer@shopsphere.demo", role: "CUSTOMER", passwordSalt: demoPasswordSalt, passwordHash: "e04754b972041759c908f4c840f585dd6aedf542f4c5ac364bae615cb7ff7987", createdAt: "2026-01-01T00:00:00.000Z" },
-  { id: "demo-admin", name: "Demo Administrator", email: "admin@shopsphere.demo", role: "ADMIN", passwordSalt: demoPasswordSalt, passwordHash: "e8e86f6829783143ab086037a9fcbae902e6ba2caae3a54cdfdf15982f41f027", createdAt: "2026-01-01T00:00:00.000Z" },
+  { id: "demo-customer", name: "Demo Customer", email: "customer@shopsphere.demo", role: "CUSTOMER", passwordSalt: demoPasswordSalt, passwordHash: "c0285161c8a27fb1a60013d7d95da19f2a7e9abf8fb0e445b3fbaa2386a35f84", createdAt: "2026-01-01T00:00:00.000Z" },
+  { id: "demo-admin", name: "Demo Administrator", email: "admin@shopsphere.demo", role: "ADMIN", passwordSalt: demoPasswordSalt, passwordHash: "7518c4d96dc5d498078a4c9032ed62ae9527fabc74b22b6c2bddf613d776827f", createdAt: "2026-01-01T00:00:00.000Z" },
 ];
 
 interface AuthState {
