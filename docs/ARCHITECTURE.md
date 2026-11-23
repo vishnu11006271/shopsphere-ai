@@ -31,3 +31,11 @@ DummyJSON product prices are source values, not INR-denominated prices. The curr
 - `/account` is available to signed-in users; `/dashboard`, `/checkout`, and `/orders` require the Customer role; `/admin` requires the Administrator role.
 - Demo credentials: `customer@shopsphere.demo` / `Customer@123` and `admin@shopsphere.demo` / `Admin@123`.
 - This frontend-only role check is for demonstration and UX gating only. A production system must enforce identity, authorization, session revocation, and password verification on a trusted server.
+
+## Product discovery (Phase 03)
+- `features/products/services/product-service.ts` is the only layer calling DummyJSON product and category endpoints.
+- `filter-products.ts` is a pure filter/sort pipeline; filter values use displayed INR units and are converted consistently for comparison.
+- `DiscoveryPage` is reused by `/products`, `/search`, and `/category/[slug]`. It owns URL-synchronized filter state, client pagination, and comparison selection.
+- Search suggestions are debounced by 350ms and include products and categories. Recent searches are stored in a capped local browser history with a clear action; popular terms appear for an empty focused search field.
+- Discovery cards expose wishlist toggles, quick view, add-to-cart, and compare actions. Wishlist/search history use separate persisted Zustand stores; remote catalogue data remains in TanStack Query.
+- Comparison is capped at four products and a side-by-side table appears once at least two are selected.
