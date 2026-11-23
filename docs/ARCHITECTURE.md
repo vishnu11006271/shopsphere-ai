@@ -22,3 +22,12 @@ Authentication is a development-only, JWT-compatible local session. Checkout is 
 
 ## Currency note
 DummyJSON product prices are source values, not INR-denominated prices. The current UI applies a clearly temporary display conversion for visual scaffolding only; before commerce flows are implemented, replace this with an explicit fixture-based INR price model and never imply the source API values are rupees.
+
+## Authentication (Phase 02)
+- `features/auth/types.ts` defines the customer/admin roles, local user record, public user projection, and expiring session shape.
+- `features/auth/services/password.ts` uses the browser Web Crypto API with PBKDF2-SHA-256 (120,000 iterations) to derive local demo password hashes. This is a development convenience, not a replacement for server-side password hashing and identity controls.
+- `features/auth/store/auth-store.ts` owns local registration, login, logout, and the seven-day mock session. The session and local user records are persisted under `shopsphere-auth` in local storage; no password is placed in the session object.
+- `ProtectedRoute` waits for Zustand persistence hydration before checking the session, redirects guests to `/login`, and can enforce the `CUSTOMER` or `ADMIN` role.
+- `/account` is available to signed-in users; `/dashboard`, `/checkout`, and `/orders` require the Customer role; `/admin` requires the Administrator role.
+- Demo credentials: `customer@shopsphere.demo` / `Customer@123` and `admin@shopsphere.demo` / `Admin@123`.
+- This frontend-only role check is for demonstration and UX gating only. A production system must enforce identity, authorization, session revocation, and password verification on a trusted server.
