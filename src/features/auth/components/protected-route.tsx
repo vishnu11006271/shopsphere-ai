@@ -16,14 +16,17 @@ export function ProtectedRoute({ children, requiredRole }: { children: React.Rea
     return users.find((item) => item.id === session.userId) ?? null;
   }, [session, users]);
 
+  const userId = user?.id;
+  const userRole = user?.role;
+
   useEffect(() => {
     if (!hasHydrated) return;
-    if (!user) {
+    if (!userId) {
       router.replace(`/login?next=${encodeURIComponent(pathname)}`);
       return;
     }
-    if (requiredRole && user.role !== requiredRole) router.replace("/account");
-  }, [hasHydrated, pathname, requiredRole, router, user?.id, user?.role]);
+    if (requiredRole && userRole !== requiredRole) router.replace("/account");
+  }, [hasHydrated, pathname, requiredRole, router, userId, userRole]);
 
   if (!hasHydrated || !user || (requiredRole && user.role !== requiredRole)) {
     return <main className="grid min-h-screen place-items-center px-5"><p className="text-sm text-muted" role="status">Checking your session…</p></main>;
