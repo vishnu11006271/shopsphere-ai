@@ -1,13 +1,14 @@
 const DEMO_SALT = "shopsphere-demo-salt";
 const DEMO_HASHES: Record<string, string> = {
-  "customer@shopsphere.demo": "e04754b972041759c908f4c840f585dd6aedf542f4c5ac364bae615cb7ff7987",
-  "admin@shopsphere.demo": "e8e86f6829783143ab086037a9fcbae902e6ba2caae3a54cdfdf15982f41f027",
+  "customer@shopsphere.demo": "c0285161c8a27fb1a60013d7d95da19f2a7e9abf8fb0e445b3fbaa2386a35f84",
+  "admin@shopsphere.demo": "7518c4d96dc5d498078a4c9032ed62ae9527fabc74b22b6c2bddf613d776827f",
 };
+const PBKDF2_ITERATIONS = 120_000;
 
 export async function hashPassword(password: string, salt: string): Promise<string> {
-  const bytes = new TextEncoder().encode(`${salt}:${password}`);
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt: new TextEncoder().encode(salt), iterations: PBKDF2_ITERATIONS, hash: "SHA-256" }, key, 256);
+  return Array.from(new Uint8Array(bits), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
 export async function verifyPassword(email: string, password: string, salt: string, hash: string): Promise<boolean> {
