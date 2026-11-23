@@ -1,0 +1,4 @@
+{
+  "trendingProductIds": [1, 2, 3, 4],
+  "frequentlyBoughtTogether": {"1": [5, 8], "2": [3, 6]}
+}
