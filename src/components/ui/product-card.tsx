@@ -15,7 +15,7 @@ export function ProductCard({ product }: { product: Product }) {
     <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#f0f1eb]">
       <Image src={product.thumbnail} alt={product.title} fill sizes="(max-width: 640px) 45vw, (max-width: 1200px) 25vw, 240px" className="object-contain p-5 transition duration-500 group-hover:scale-105" />
       {product.discountPercentage > 0 && <span className="absolute left-3 top-3 rounded-full bg-[#f4e7d1] px-3 py-1 text-xs font-semibold text-[#8b5a13]">-{Math.round(product.discountPercentage)}%</span>}
-      <button type="button" aria-label={isSaved ? `Remove ${product.title} from wishlist` : `Add ${product.title} to wishlist`} onClick={() => toggleWishlist(product.id)} className="absolute right-3 top-3 rounded-full bg-white/90 p-2 text-ink shadow-sm hover:text-rose-600"><Heart size={17} className={isSaved ? "fill-rose-500 text-rose-500" : ""}/></button>}
+      <button type="button" aria-label={isSaved ? `Remove ${product.title} from wishlist` : `Add ${product.title} to wishlist`} onClick={() => toggleWishlist(product.id)} className="absolute right-3 top-3 rounded-full bg-white/90 p-2 text-ink shadow-sm hover:text-rose-600"><Heart size={17} className={isSaved ? "fill-rose-500 text-rose-500" : ""}/></button>
     </div>
     <div className="px-2 pb-2 pt-4">
       <p className="text-xs capitalize tracking-wide text-muted">{product.category}</p>
