@@ -22,7 +22,7 @@ export function filterAndSortProducts(products: Product[], filters: ProductFilte
       case "price-desc": return b.price-a.price;
       case "rating": return b.rating-a.rating;
       case "newest": return b.id-a.id;
-      default: return b.rating-a.rating || a.id-b.id;
+      default: return 0;
     }
   });
 }
