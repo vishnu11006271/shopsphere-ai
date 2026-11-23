@@ -32,7 +32,6 @@ export const useAuthStore = create<AuthState>()(persist((set, get) => ({
   isSessionValid: () => {
     const session = get().session;
     if (!session || session.expiresAt <= Date.now()) {
-      if (session) set({ session: null });
       return false;
     }
     return true;
