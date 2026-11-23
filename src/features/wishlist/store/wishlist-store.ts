@@ -10,6 +10,7 @@ interface WishlistState {
   hasHydrated: boolean;
   toggle: (productId: number, product?: Product) => void;
   remove: (productId: number) => void;
+  add: (product: Product) => void;
   saveProduct: (product: Product) => void;
   setHasHydrated: (value: boolean) => void;
 }
@@ -27,6 +28,10 @@ export const useWishlistStore = create<WishlistState>()(persist((set) => ({
         : product ? [...state.productSnapshots.filter((item) => item.id !== productId), product] : state.productSnapshots,
     };
   }),
+  add: (product) => set((state) => ({
+    productIds: state.productIds.includes(product.id) ? state.productIds : [...state.productIds, product.id],
+    productSnapshots: [...state.productSnapshots.filter((item) => item.id !== product.id), product],
+  })),
   remove: (productId) => set((state) => ({
     productIds: state.productIds.filter((id) => id !== productId),
     productSnapshots: state.productSnapshots.filter((item) => item.id !== productId),
