@@ -20,12 +20,13 @@ export function RecommendationPreferencesPanel(){
   const searches=useSearchHistoryStore((state)=>state.searches);
   const clearSearches=useSearchHistoryStore((state)=>state.clear);
   const wishlistCount=useWishlistStore((state)=>state.productIds.length);
-  const cartCount=useCartStore((state)=>state.items.length);
+  const cartLines=useCartStore((state)=>state.items);
+  const cartCount=cartLines.length;
   const orders=useCheckoutStore((state)=>state.orders);
   const enabled=useRecommendationPreferencesStore((state)=>state.enabledSignals);
   const setEnabled=useRecommendationPreferencesStore((state)=>state.setSignalEnabled);
   const reset=useRecommendationPreferencesStore((state)=>state.reset);
-  const prices=useMemo(()=>[...entries.map((entry)=>entry.product.price),...useCartStore.getState().items.map((line)=>line.product.price)], [entries]);
+  const prices=useMemo(()=>[...entries.map((entry)=>entry.product.price),...cartLines.map((line)=>line.product.price)], [entries,cartLines]);
   const range=prices.length?{min:Math.min(...prices)*85,max:Math.max(...prices)*85,average:prices.reduce((sum,value)=>sum+value,0)/prices.length*85}:null;
   const resetHistory=()=>{clearViewed();clearSearches();reset();};
   return <section id="recommendation-preferences" className="mt-6 rounded-3xl bg-white p-6 shadow-soft sm:p-8">
