@@ -76,6 +76,11 @@ describe("recommendation engine",()=>{
     expect(results[0].strategy).toBe("personalized");
     expect(results[0].reasons[0].label).toBe("Popular fallback");
   });
+  it("uses previous purchases for repeat and replenishment suggestions",()=>{
+    const results=run("personalized",{recentlyViewed:[],wishlist:[],cart:[],purchases:[purchased],searchQueries:[]});
+    expect(results[0].product.id).toBe(103);
+    expect(results[0].reasons.some((reason)=>reason.label==="Previously purchased")).toBe(true);
+  });
   it("uses search history even when the visitor has no viewed, cart or wishlist products",()=>{
     const results=run("personalized",{recentlyViewed:[],wishlist:[],cart:[],purchases:[],searchQueries:["smartphones"]});
     expect(results.some((item)=>item.product.category==="smartphones")).toBe(true);
