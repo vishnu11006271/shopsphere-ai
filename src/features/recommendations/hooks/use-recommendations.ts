@@ -20,15 +20,16 @@ export function useRecommendations(options: {
   enabled?: boolean;
 }) {
   const queryClient=useQueryClient();
-  const recentlyViewed=useRecentlyViewedStore((state)=>state.entries.map((entry)=>entry.product));
+  const viewedEntries=useRecentlyViewedStore((state)=>state.entries);
+  const recentlyViewed=useMemo(()=>viewedEntries.map((entry)=>entry.product),[viewedEntries]);
   const searchQueries=useSearchHistoryStore((state)=>state.searches);
   const wishlistIds=useWishlistStore((state)=>state.productIds);
   const wishlistSnapshots=useWishlistStore((state)=>state.productSnapshots);
   const cartLines=useCartStore((state)=>state.items);
   const orders=useCheckoutStore((state)=>state.orders);
   const enabledSignals=useRecommendationPreferencesStore((state)=>state.enabledSignals);
-  const cartProducts=cartLines.map((line)=>line.product);
-  const purchaseIds=orders.flatMap((order)=>order.items.map((item)=>item.productId));
+  const cartProducts=useMemo(()=>cartLines.map((line)=>line.product),[cartLines]);
+  const purchaseIds=useMemo(()=>orders.flatMap((order)=>order.items.map((item)=>item.productId)),[orders]);
   const querySignature=useMemo(()=>JSON.stringify({
     viewed:recentlyViewed.map((item)=>item.id),searchQueries,wishlistIds,cart:cartProducts.map((item)=>item.id),
     purchases:purchaseIds,enabledSignals,category:options.category,current:options.currentProduct?.id,
