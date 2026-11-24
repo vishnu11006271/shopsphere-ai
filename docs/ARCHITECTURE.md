@@ -74,7 +74,7 @@ DummyJSON product prices are source values, not INR-denominated prices. The curr
 The recommendation implementation follows the PRD's enforced boundary: UI rail → \`useRecommendations\` hook → \`recommendationService\` → \`RecommendationProvider\` contract → \`MockRecommendationProvider\` → pure mock engine. React components never implement scoring or candidate filtering. The provider can be replaced later without changing the UI or hook contract.
 
 ### Signal assembly and persistence
-- \`features/recommendations/store/recently-viewed-store.ts\` records the last 20 distinct PDP visits, newest first, with product snapshots in local storage.
+- \`features/recommendations/store/recently-viewed-store.ts\` records every distinct PDP visit, newest first, with product snapshots in local storage; the homepage and header show previews while the dashboard exposes the full history.
 - The hook assembles recently viewed products, recent search queries, category context, wishlist products, cart lines, and product snapshots resolved from the customer's local order history. Live catalogue data is read through the existing TanStack Query product cache.
 - The engine derives the observed price band from available browsing, wishlist, cart and purchase products; brand affinity is derived from browsing frequency. Search text is matched against product title, brand, category and tags. Product category, tags and rating come from the catalogue.
 - \`recommendation-preferences-store.ts\` lets a customer enable or disable each of the ten signal families shown in the dashboard. Resetting personalization clears recently viewed and search history and restores the default signal toggles; it intentionally does not delete cart, wishlist, or order data.
