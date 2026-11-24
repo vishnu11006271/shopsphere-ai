@@ -1,8 +1,4 @@
-import { expect, test } from "@  await page.route("**/products/search**", async (route) => {
-    searchRequests += 1;
-    await route.continue();
-  });
-playwright/test";
+import { expect, test } from "@playwright/test";
 
 test("product discovery route renders catalogue and filter controls", async ({ page }) => {
   await page.goto("/products");
