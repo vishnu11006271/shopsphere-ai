@@ -68,9 +68,10 @@ function median(values: number[]): number {
 }
 
 function ordinalIndex(message: string): number {
-  if (/\b(first|1st|one)\b/i.test(message)) return 0;
+  if (/\b(second|2nd|two)\b/i.test(message)) return 1;
   if (/\b(third|3rd|three)\b/i.test(message)) return 2;
   if (/\b(fourth|4th|four)\b/i.test(message)) return 3;
+  if (/\b(first|1st|one)\b/i.test(message)) return 0;
   return 1;
 }
 
