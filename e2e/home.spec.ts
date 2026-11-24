@@ -27,6 +27,7 @@ test("returning visitor sees recently viewed and personalized recommendations", 
   await page.getByLabel("Recently viewed products").click();
   await expect(page.locator('details:has(summary[aria-label="Recently viewed products"])').getByRole("link").first()).toHaveAttribute("href", "/products/1");
   await expect(page.getByRole("heading", { name: "Recommended For You" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Picked by Category" })).toBeVisible();
 });
 
 test("wishlist signals surface a homepage wishlist recommendation rail", async ({ page }) => {
