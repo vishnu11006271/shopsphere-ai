@@ -145,18 +145,18 @@ function frequentlyBought(request:RecommendationRequest):RecommendedProduct[] {
 function personalized(request:RecommendationRequest):RecommendedProduct[] {
   const sources=sourceProducts(request.signals);
   const hasSearch=active(request.signals,"searchHistory")&&request.products.some((product)=>searchRelevance(product,request.signals)>0);
-  const items=ranked(request.products.filter((product)=>!sources.some((item)=>item.id===product.id)),"personalized",request.signals,request.currentProduct,request.limit??8);
+  const items=ranked(request.products.filter((product)=>!sources.some((item)=>item.id===product.id)),"personalized",request.signals,request.currentProduct,request.limit??8).filter((item)=>item.score>=0.18);
   if(items.length&&(sources.length||hasSearch))return items;
   return trending(request).map((item)=>({...item,strategy:"personalized",reasons:[{label:"Popular fallback",detail:"Signals are limited, so popular products provide a useful starting point"}]}));
 }
 export function getRecommendations(request:RecommendationRequest):RecommendedProduct[] {
   const strategy=request.strategy;
   if(strategy==="recently-viewed")return recentlyViewed(request);
-  if(strategy==="similar-products"){const alreadyKnown=new Set(sourceProducts(request.signals).map((product)=>product.id));return ranked(request.products.filter((product)=>!alreadyKnown.has(product.id)),"similar-products",request.signals,request.currentProduct,request.limit??8).map((item)=>({...item,reasons:[{label:"Similar to this product",detail:"Category, tags and price compared with the product you are viewing"},...item.reasons.filter((reason)=>reason.label!=="Category interest")]}));}
+  if(strategy==="similar-products"){const alreadyKnown=new Set(sourceProducts(request.signals).map((product)=>product.id));const anchors=request.currentProduct?[request.currentProduct]:request.signals.recentlyViewed;return ranked(request.products.filter((product)=>!alreadyKnown.has(product.id)),"similar-products",request.signals,request.currentProduct,request.limit??8).filter((item)=>relation(item.product,anchors)>=0.15).map((item)=>({...item,reasons:[{label:"Similar to this product",detail:"Category, tags and price compared with the product you are viewing"},...item.reasons.filter((reason)=>reason.label!=="Category interest")]}));}
   if(strategy==="category-based")return categoryBased(request);
   if(strategy==="price-based")return priceBased(request);
-  if(strategy==="wishlist-based"){if(!active(request.signals,"wishlist"))return [];return ranked(request.products,"wishlist-based",request.signals,undefined,request.limit??8).filter((item)=>!request.signals.wishlist.some((saved)=>saved.id===item.product.id)).map((item)=>({...item,reasons:[{label:"Because of your wishlist",detail:"Matches products and categories you saved"},...item.reasons]}));}
-  if(strategy==="cart-based"){if(!active(request.signals,"cart"))return [];return ranked(request.products,"cart-based",request.signals,undefined,request.limit??8).filter((item)=>!request.signals.cart.some((saved)=>saved.id===item.product.id)).map((item)=>({...item,reasons:[{label:"Because of your cart",detail:"Matches products and categories already in your bag"},...item.reasons]}));}
+  if(strategy==="wishlist-based"){if(!active(request.signals,"wishlist"))return [];return ranked(request.products,"wishlist-based",request.signals,undefined,request.limit??8).filter((item)=>!request.signals.wishlist.some((saved)=>saved.id===item.product.id)&&relation(item.product,request.signals.wishlist)>=0.15).map((item)=>({...item,reasons:[{label:"Because of your wishlist",detail:"Matches products and categories you saved"},...item.reasons]}));}
+  if(strategy==="cart-based"){if(!active(request.signals,"cart"))return [];return ranked(request.products,"cart-based",request.signals,undefined,request.limit??8).filter((item)=>!request.signals.cart.some((saved)=>saved.id===item.product.id)&&relation(item.product,request.signals.cart)>=0.15).map((item)=>({...item,reasons:[{label:"Because of your cart",detail:"Matches products and categories already in your bag"},...item.reasons]}));}
   if(strategy==="frequently-bought-together")return frequentlyBought(request);
   if(strategy==="trending")return trending(request);
   return personalized(request);
