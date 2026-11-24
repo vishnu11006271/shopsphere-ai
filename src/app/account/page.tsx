@@ -6,6 +6,7 @@ import { LogOut, ShieldCheck, ShoppingBag, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProtectedRoute } from "@/features/auth/components/protected-route";
 import { useAuthStore } from "@/features/auth/store/auth-store";
+import { RecommendationPreferencesPanel } from "@/features/recommendations/components/recommendation-preferences-panel";
 
 function AccountContent() {
   const router = useRouter();
