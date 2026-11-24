@@ -153,8 +153,9 @@ function personalized(request:RecommendationRequest):RecommendedProduct[] {
   const repeatEligible=active(request.signals,"purchases")?request.signals.purchases:[];
   const excluded=new Set([...request.signals.recentlyViewed.filter(()=>active(request.signals,"recentlyViewed")),...request.signals.wishlist.filter(()=>active(request.signals,"wishlist")),...request.signals.cart.filter(()=>active(request.signals,"cart"))].map((product)=>product.id));
   const hasSearch=active(request.signals,"searchHistory")&&request.products.some((product)=>searchRelevance(product,request.signals)>0);
+  const hasBrandPreference=active(request.signals,"brandPreference")&&request.signals.recentlyViewed.length>0;
   const items=ranked(request.products.filter((product)=>!excluded.has(product.id)),"personalized",request.signals,request.currentProduct,request.limit??8).filter((item)=>item.score>=0.12);
-  if(items.length&&(sources.length||hasSearch||repeatEligible.length))return items;
+  if(items.length&&(sources.length||hasSearch||repeatEligible.length||hasBrandPreference))return items;
   return trending(request).map((item)=>({...item,strategy:"personalized",reasons:[{label:"Popular fallback",detail:"Signals are limited, so popular products provide a useful starting point"}]}));
 }
 export function getRecommendations(request:RecommendationRequest):RecommendedProduct[] {
