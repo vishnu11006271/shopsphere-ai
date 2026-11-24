@@ -10,6 +10,7 @@ import { useCartStore } from "@/store/cart-store";
 import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/features/search/components/search-bar";
 import { RecommendationRail } from "@/features/recommendations/components/recommendation-rail";
+import { RecentlyViewedDropdown } from "@/features/recommendations/components/recently-viewed-dropdown";
 import { useRecentlyViewedStore } from "@/features/recommendations/store/recently-viewed-store";
 import { useSearchHistoryStore } from "@/features/search/store/search-history-store";
 import { useWishlistStore } from "@/features/wishlist/store/wishlist-store";
@@ -19,6 +20,7 @@ export default function HomePage() {
   const { data, isPending, isError, refetch } = useQuery({ queryKey: productKeys.featured, queryFn: ({ signal }) => productService.getFeatured(signal) });
   const cartCount = useCartStore((state) => state.items.reduce((sum, item) => sum + item.quantity, 0));
   const hasViewed = useRecentlyViewedStore((state) => state.entries.length > 0);
+  const recentlyViewedTitle = useRecentlyViewedStore((state) => state.entries[0]?.product.title ?? "");
   const hasSearches = useSearchHistoryStore((state) => state.searches.length > 0);
   const hasWishlist = useWishlistStore((state) => state.productIds.length > 0);
   const hasOrders = useCheckoutStore((state) => state.orders.length > 0);
@@ -27,7 +29,7 @@ export default function HomePage() {
     <header className="sticky top-0 z-20 border-b border-black/5 bg-canvas/90 backdrop-blur"><div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
       <a href="#top" className="text-xl font-black tracking-tight">shop<span className="text-brand">sphere</span><span className="ml-1 align-top text-[10px] text-brand">AI</span></a>
       <nav className="hidden items-center gap-8 text-sm font-medium text-muted md:flex"><a href="#discover" className="hover:text-ink">Discover</a><Link href="/products" className="hover:text-ink">Categories</Link><a href="#about" className="hover:text-ink">How it works</a></nav>
-      <div className="flex items-center gap-2"><Link href="/account" className="hidden items-center rounded-full px-3 py-2 text-sm font-semibold text-muted hover:bg-white hover:text-ink sm:inline-flex">Account</Link><div className="hidden w-full max-w-md lg:block"><SearchBar compact/></div><Link href="/products" aria-label="Browse products" className="rounded-full p-3 hover:bg-white lg:hidden"><Search size={18}/></Link><Link href="/wishlist" aria-label="Wishlist" className="rounded-full p-3 hover:bg-white"><Heart size={18}/></Link><Link href="/cart" aria-label={`Cart, ${cartCount} items`} className="relative rounded-full bg-white p-3"><ShoppingBag size={18}/>{cartCount > 0 && <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1 text-[10px] text-white">{cartCount}</span>}</Link><button aria-label="Open menu" className="rounded-full p-3 md:hidden"><Menu size={18}/></button></div>
+      <div className="flex items-center gap-2"><Link href="/account" className="hidden items-center rounded-full px-3 py-2 text-sm font-semibold text-muted hover:bg-white hover:text-ink sm:inline-flex">Account</Link><div className="hidden w-full max-w-md lg:block"><SearchBar compact/></div><Link href="/products" aria-label="Browse products" className="rounded-full p-3 hover:bg-white lg:hidden"><Search size={18}/></Link><RecentlyViewedDropdown/><Link href="/wishlist" aria-label="Wishlist" className="rounded-full p-3 hover:bg-white"><Heart size={18}/></Link><Link href="/cart" aria-label={`Cart, ${cartCount} items`} className="relative rounded-full bg-white p-3"><ShoppingBag size={18}/>{cartCount > 0 && <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1 text-[10px] text-white">{cartCount}</span>}</Link><button aria-label="Open menu" className="rounded-full p-3 md:hidden"><Menu size={18}/></button></div>
     </div></header>
     <section id="top" className="mx-auto grid max-w-7xl gap-10 px-5 pb-16 pt-12 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-8 lg:pb-24 lg:pt-20">
       <div><span className="inline-flex items-center gap-2 rounded-full bg-[#e7efe8] px-4 py-2 text-xs font-semibold text-brand"><Sparkles size={14}/> SHOPPING, A LITTLE MORE PERSONAL</span><h1 className="mt-7 max-w-2xl text-5xl font-semibold leading-[1.05] tracking-[-.055em] sm:text-6xl lg:text-7xl">Good finds.<br/><span className="text-brand">Better choices.</span></h1><p className="mt-6 max-w-lg text-base leading-7 text-muted">Discover things that fit your taste, your needs, and your budget. Thoughtful recommendations, without the guesswork.</p><div className="mt-8 flex flex-wrap gap-3"><a href="#discover"><Button>Explore the collection <ArrowRight size={16} className="ml-2"/></Button></a><a href="#about"><Button variant="secondary">How it works</Button></a></div><div className="mt-10 flex items-center gap-4 text-xs text-muted"><span className="h-px w-10 bg-brand"/>Curated from what matters to you</div></div>
@@ -38,7 +40,8 @@ export default function HomePage() {
     </section>
     <div className="mx-auto max-w-7xl px-5 pb-16 lg:px-8">
       <RecommendationRail strategy="trending" title="Trending Products" note="Popular items ranked from deterministic mock popularity and rating-velocity signals."/>
-      <RecommendationRail strategy="recently-viewed" title="Recently Viewed" note="Your latest product views, in most-recent-first order." enabled={hasViewed}/>
+      <RecommendationRail strategy="recently-viewed" title={recentlyViewedTitle ? "Because You Viewed " + recentlyViewedTitle : "Recently Viewed"} note="Your latest product views, in most-recent-first order." enabled={hasViewed}/>
+      <RecommendationRail strategy="wishlist-based" title="Because of Your Wishlist" note="Products related to items you have saved." enabled={hasWishlist}/>
       <RecommendationRail strategy="personalized" title="Recommended For You" note="A weighted blend of your available browsing and shopping signals." enabled={hasPersonalizationSignals}/>
       <RecommendationRail strategy="price-based" title="Within Your Price Range" note="Products near the price range inferred from your browsing and shopping activity." enabled={hasPersonalizationSignals}/>
     </div>
