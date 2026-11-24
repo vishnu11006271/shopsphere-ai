@@ -99,6 +99,7 @@ export function extractShoppingIntent(
   const cheaper = /\b(cheaper|less expensive|lower priced|lower price)\b/i.test(text);
   const moreExpensive = /\b(more expensive|costlier|higher priced|higher price)\b/i.test(text);
   const betterRated = /\b(better rated|better ratings|higher rated|higher rating)\b/i.test(text);
+  const increaseBudget = /\b(increase|raise|expand)\s+(?:my\s+)?(?:budget|price limit|limit)\b|\b(higher budget|more budget)\b/i.test(text);
 
   if (category) {
     const changedTopic = Boolean(previous?.categorySlugs.length && !category.slugs.some((slug) => previous.categorySlugs.includes(slug)));
@@ -114,7 +115,7 @@ export function extractShoppingIntent(
     return { kind: previous && !changedTopic ? "refinement" : "search", intent, explanation: changedTopic ? "The category changed, so category-specific context was reset while the existing budget preference was retained." : "A new category and its available filters were extracted." };
   }
 
-  if (previous && (cheaper || moreExpensive || betterRated || color || explicitMax !== undefined || explicitMin !== undefined || explicitRating !== undefined)) {
+  if (previous && (cheaper || moreExpensive || betterRated || increaseBudget || color || explicitMax !== undefined || explicitMin !== undefined || explicitRating !== undefined)) {
     const intent: AssistantIntent = { ...previous };
     if (explicitMax !== undefined) intent.maxPrice = explicitMax;
     if (explicitMin !== undefined) intent.minPrice = explicitMin;
@@ -134,6 +135,11 @@ export function extractShoppingIntent(
     if (betterRated) {
       intent.minRating = Math.min(5, Math.max(previous.minRating ?? 4, 4.5));
       intent.sort = "rating";
+    }
+    if (increaseBudget) {
+      const currentBudget = previous.maxPrice ?? median(previousResults.map((product) => product.price * 85));
+      if (currentBudget > 0) intent.maxPrice = currentBudget * 1.25;
+      intent.sort = "price-asc";
     }
     return { kind: "refinement", intent, explanation: "The previous category and filters were retained and refined." };
   }

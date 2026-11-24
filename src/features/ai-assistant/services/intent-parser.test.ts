@@ -43,6 +43,13 @@ describe("extractShoppingIntent", () => {
     expect(result.intent).toMatchObject({ categorySlugs: ["mobile-accessories"], maxPrice: 5000, minRating: 4.5, sort: "rating" });
   });
 
+  it("increases the existing budget when asked", () => {
+    const result = extractShoppingIntent("Increase my budget", categories, {
+      previousIntent: { categorySlugs: ["mobile-accessories"], maxPrice: 5000 },
+    });
+    expect(result.intent?.maxPrice).toBe(6250);
+  });
+
   it("uses the second earlier result as a similarity seed", () => {
     const result = extractShoppingIntent("Show me more like the second one", categories, { previousResults: products });
     expect(result.kind).toBe("similar");

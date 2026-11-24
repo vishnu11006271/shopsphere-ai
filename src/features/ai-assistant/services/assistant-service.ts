@@ -92,7 +92,7 @@ export function respondToShoppingRequest(
       : "";
     return {
       text: "I couldn’t find in-stock products matching all those filters." + attributeNote + " You can relax the budget or rating filter and I’ll try again.",
-      products: [], intent, suggestions: ["Increase my budget", "Show lower-rated options", "Try another category"],
+      products: [], intent, suggestions: ["Increase my budget", "Show me smartphones instead", "Show me laptops instead"],
     };
   }
   return {
