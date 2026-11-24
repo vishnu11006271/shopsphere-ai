@@ -12,7 +12,7 @@ export const recommendationService = {
       .filter((product):product is Product=>Boolean(product));
     const purchases=request.context.purchaseIds
       .map((id)=>liveById.get(id))
-      .filter((product)=>Boolean(product));
+      .filter((product):product is Product=>Boolean(product));
     const signals:RecommendationSignals={
       recentlyViewed:request.context.recentlyViewed,
       searchQueries:request.context.searchQueries,
