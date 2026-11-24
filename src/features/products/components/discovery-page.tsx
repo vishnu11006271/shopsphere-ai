@@ -15,6 +15,7 @@ import { CommerceLinks } from "@/features/cart/components/commerce-links";
 import { useCartStore } from "@/store/cart-store";
 import { useWishlistStore } from "@/features/wishlist/store/wishlist-store";
 import type { Product } from "@/types/product";
+import { RecommendationRail } from "@/features/recommendations/components/recommendation-rail";
 
 const PAGE_SIZE=12;
 function readFilters(params:URLSearchParams):ProductFilters {
@@ -75,6 +76,7 @@ function DiscoveryContent({categorySlug=""}:{categorySlug?:string}) {
     </section>
    </div>
   </div>
+  <div className="mx-auto max-w-7xl px-5 pb-14 lg:px-8"><RecommendationRail strategy="price-based" title="Within Your Price Range" note="Based on the typical price of products you have viewed, saved or added to your cart." enabled={Boolean(query)}/></div>
   <ProductQuickView product={quickView} onClose={()=>setQuickView(null)}/>
   <ProductComparison products={comparison} onRemove={id=>setComparison(old=>old.filter(p=>p.id!==id))} onClear={()=>setComparison([])}/>
  </main>;
