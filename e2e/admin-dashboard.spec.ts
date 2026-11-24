@@ -30,7 +30,7 @@ test("administrator can create a product in the local catalogue", async ({ page 
   await page.getByRole("button", { name: "Add product", exact: true }).click();
   await page.getByLabel("Product title").fill("Locally Added Smart Watch");
   await page.getByLabel("Brand").fill("ShopSphere");
-  await page.getByLabel("Category").selectOption("mens-shirts");
+  await page.locator("form").filter({ hasText: "Add product" }).getByRole("combobox").selectOption("mens-shirts");
   await page.getByLabel("Catalogue price (source units)").fill("75");
   await page.getByLabel("Inventory quantity").fill("8");
   await page.getByRole("button", { name: "Save locally" }).click();

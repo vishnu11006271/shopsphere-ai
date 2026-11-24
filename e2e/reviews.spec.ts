@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 const product = {
   id: 1, title: "Test Headphones", description: "A comfortable pair of wireless headphones for everyday listening.",
   category: "mens-shirts", price: 50, discountPercentage: 10, rating: 4.5, stock: 10,
-  brand: "ShopSphere", thumbnail: "https://cdn.dummyjson.com/product-images/1/thumbnail.jpg",
+  brand: "ShopSphere", thumbnail: "https://cdn.dummyjson.com/product-images/1/1.jpg",
   images: ["https://cdn.dummyjson.com/product-images/1/thumbnail.jpg"], tags: ["audio"],
   reviews: [],
 };
@@ -36,6 +36,7 @@ test("customer submits a review with a verified-purchase indicator from local or
   await mockCatalogue(page);
   await page.goto("/products/1");
   await expect(page.getByRole("heading", { name: "Customer reviews" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Submit review" })).toBeEnabled();
   await page.getByLabel("Review title").fill("Comfortable for daily use");
   await page.getByLabel("Your review").fill("The headphones are comfortable and the sound quality is clear for everyday listening.");
   await page.getByRole("button", { name: "Submit review" }).click();

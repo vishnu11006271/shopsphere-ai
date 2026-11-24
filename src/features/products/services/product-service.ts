@@ -22,6 +22,12 @@ async function getMergedCatalogue(signal?: AbortSignal): Promise<Product[]> {
   return mergeAdminProducts(result.products);
 }
 
+function mergeLocalCandidates(baseProducts: Product[]): Product[] {
+  const baseIds = new Set(baseProducts.map((product) => product.id));
+  const localProducts = useAdminCatalogStore.getState().products.filter((product) => !baseIds.has(product.id));
+  return mergeAdminProducts([...baseProducts, ...localProducts]);
+}
+
 export const productService = {
   getFeatured: async (signal?: AbortSignal) => response((await getMergedCatalogue(signal)).sort((a, b) => b.rating - a.rating).slice(0, 8)),
   getById: async (id: number, signal?: AbortSignal) => {
@@ -40,16 +46,19 @@ export const productService = {
     return mergeAdminCategories(categories);
   },
   search: async (query: string, signal?: AbortSignal) => {
+    await waitForAdminCatalogHydration();
+    const result = await apiGet<ProductListResponse>(`/products/search?q=${encodeURIComponent(query.trim())}&limit=0`, signal);
     const normalized = query.trim().toLowerCase();
-    const products = await getMergedCatalogue(signal);
-    return response(products.filter((product) =>
+    const products = mergeLocalCandidates(result.products).filter((product) =>
       [product.title, product.description, product.brand ?? "", product.category, ...(product.tags ?? [])]
         .some((value) => value.toLowerCase().includes(normalized)),
-    ));
+    );
+    return response(products);
   },
   getByCategory: async (slug: string, signal?: AbortSignal) => {
-    const products = await getMergedCatalogue(signal);
-    return response(products.filter((product) => product.category === slug));
+    await waitForAdminCatalogHydration();
+    const result = await apiGet<ProductListResponse>(`/products/category/${encodeURIComponent(slug)}?limit=0`);
+    return response(mergeLocalCandidates(result.products).filter((product) => product.category === slug));
   },
   discover: async (query: string, category: string, signal?: AbortSignal) => {
     if (query.trim()) return productService.search(query.trim(), signal);

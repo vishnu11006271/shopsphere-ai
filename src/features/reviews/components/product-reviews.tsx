@@ -39,6 +39,7 @@ export function ProductReviews({ product }: { product: Product }) {
     return record ? { id: record.id, name: record.name, email: record.email, role: record.role } : null;
   }, [session, users]);
   const orders = useCheckoutStore((state) => state.orders);
+  const ordersHydrated = useCheckoutStore((state) => state.hasHydrated);
   const allReviews = useReviewStore((state) => state.reviews);
   const addReview = useReviewStore((state) => state.addReview);
   const [sort, setSort] = useState<"recent" | "highest" | "lowest" | "helpful">("recent");
@@ -55,6 +56,10 @@ export function ProductReviews({ product }: { product: Product }) {
   function submitReview(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!user || !canReview) return;
+    if (!ordersHydrated) {
+      setError("Your local order history is still loading. Please try again in a moment.");
+      return;
+    }
     const cleanTitle = title.trim();
     const cleanBody = body.trim();
     if (cleanTitle.length < 3 || cleanTitle.length > MAX_REVIEW_TITLE_LENGTH) {
@@ -90,8 +95,8 @@ export function ProductReviews({ product }: { product: Product }) {
           <label className="block text-sm font-semibold">Review title<input value={title} onChange={(event)=>setTitle(event.target.value)} maxLength={MAX_REVIEW_TITLE_LENGTH} required placeholder="Summarize your experience" className="mt-2 w-full rounded-xl border border-black/10 bg-canvas px-3 py-3 text-sm font-normal outline-none focus:border-brand"/></label>
           <label className="block text-sm font-semibold">Your review<textarea value={body} onChange={(event)=>setBody(event.target.value)} minLength={MIN_REVIEW_LENGTH} maxLength={MAX_REVIEW_LENGTH} required rows={5} placeholder="What should other shoppers know?" className="mt-2 w-full resize-y rounded-xl border border-black/10 bg-canvas px-3 py-3 text-sm font-normal outline-none focus:border-brand"/></label>
           <p className="text-[11px] text-muted">{body.trim().length}/{MAX_REVIEW_LENGTH} characters · minimum {MIN_REVIEW_LENGTH}</p>
-          {error && <p role="alert" className="text-xs text-rose-600">{error}</p>}<Button type="submit" className="w-full">Submit review</Button>
-          <p className="text-[10px] leading-4 text-muted">Reviews are saved locally in this browser. Verified purchase is based on your local order history.</p>
+          {error && <p role="alert" className="text-xs text-rose-600">{error}</p>}<Button type="submit" className="w-full" disabled={!ordersHydrated}>Submit review</Button>
+          <p className="text-[10px] leading-4 text-muted">{ordersHydrated ? "Reviews are saved locally in this browser. Verified purchase is based on your local order history." : "Loading your local order history before enabling review submission…"}</p>
         </form> : <div className="mt-5 rounded-xl bg-canvas p-4"><p className="text-sm text-muted">Sign in with a customer account to submit a review.</p><Link href={`/login?next=${encodeURIComponent(`/products/${product.id}#reviews`)}`} className="mt-3 inline-flex text-sm font-semibold text-brand hover:underline">Sign in to review</Link></div>}
       </aside>
     </div>
