@@ -60,3 +60,22 @@ export interface RecommendationWeights {
   wishlistRelation: number;
   cartRelation: number;
 }
+
+export interface RecommendationContext {
+  recentlyViewed: Product[];
+  searchQueries: string[];
+  wishlistIds: number[];
+  wishlistSnapshots: Product[];
+  cart: Product[];
+  purchaseIds: number[];
+  currentCategory?: string;
+  enabledSignals: Record<RecommendationSignalKey, boolean>;
+}
+export interface RecommendationServiceRequest {
+  strategy: RecommendationStrategy;
+  products: Product[];
+  context: RecommendationContext;
+  currentProduct?: Product;
+  category?: string;
+  limit?: number;
+}
