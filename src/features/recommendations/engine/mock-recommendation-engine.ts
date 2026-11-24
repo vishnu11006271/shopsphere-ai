@@ -33,10 +33,20 @@ function typicalPrice(signals:RecommendationSignals):number|null {
   const prices=sourceProducts(signals).map((product)=>product.price).filter((price)=>Number.isFinite(price)&&price>0);
   return prices.length?prices.reduce((sum,value)=>sum+value,0)/prices.length:null;
 }
+function searchRelevance(product:Product,signals:RecommendationSignals):number {
+  if(!active(signals,"searchHistory")||!signals.searchQueries.length)return 0;
+  const fields=[product.title,product.brand??"",product.category,...(product.tags??[])].map(normalize);
+  return Math.max(0,...signals.searchQueries.map((query)=>{
+    const q=normalize(query);if(!q)return 0;
+    if(fields.some((field)=>field.includes(q)||q.includes(field)))return 1;
+    const tokens=q.split(" ").filter((token)=>token.length>2);
+    return tokens.length?tokens.filter((token)=>fields.some((field)=>field.includes(token))).length/tokens.length:0;
+  }));
+}
 function categoryMatch(product:Product,signals:RecommendationSignals,anchor?:Product):number {
   let score=anchor?.category===product.category?1:0;const categories=sourceCategories(signals);
   if(categories.length){const count=categories.filter((category)=>category===product.category).length;score=Math.max(score,count/categories.length);}
-  return clamp01(score);
+  return clamp01(Math.max(score,searchRelevance(product,signals)*0.85));
 }
 function priceSimilarity(product:Product,signals:RecommendationSignals,anchor?:Product):number {
   const target=anchor?.price??typicalPrice(signals);if(target===null||target===undefined||target<=0)return 0;
@@ -44,8 +54,8 @@ function priceSimilarity(product:Product,signals:RecommendationSignals,anchor?:P
 }
 function tagOverlap(product:Product,signals:RecommendationSignals,anchor?:Product):number {
   const sources=[...sourceProducts(signals),...(anchor?[anchor]:[])];
-  const tags=unique(sources.flatMap((item)=>item.tags??[]).map(normalize).filter(Boolean));
-  const candidate=unique((product.tags??[]).map(normalize).filter(Boolean));
+  const tags=unique([...sources.flatMap((item)=>item.tags??[]),...(active(signals,"searchHistory")?signals.searchQueries:[])].map(normalize).filter(Boolean));
+  const candidate=unique([product.title,product.brand??"",product.category,...(product.tags??[])].map(normalize).filter(Boolean));
   if(!tags.length||!candidate.length)return 0;
   return candidate.filter((tag)=>tags.includes(tag)).length/unique([...tags,...candidate]).length;
 }
@@ -73,7 +83,7 @@ function scoreComponents(product:Product,signals:RecommendationSignals,anchor?:P
     priceSimilarity:active(signals,"priceRange")?priceSimilarity(product,signals,anchor):0,
     tagOverlap:active(signals,"tagInterest")?tagOverlap(product,signals,anchor):0,
     normalizedRating:active(signals,"ratingPreference")?clamp01(product.rating/5):0,
-    recentlyViewedRelation:relation(product,active(signals,"recentlyViewed")?signals.recentlyViewed:anchor?[anchor]:[]),
+    recentlyViewedRelation:relation(product,active(signals,"recentlyViewed")&&signals.recentlyViewed.length?signals.recentlyViewed:anchor?[anchor]:[]),
     wishlistRelation:relation(product,active(signals,"wishlist")?signals.wishlist:[]),
     cartRelation:relation(product,active(signals,"cart")?signals.cart:[]),
   };
@@ -94,9 +104,11 @@ function ranked(candidates:Product[],strategy:RecommendationStrategy,signals:Rec
     .sort((a,b)=>b.score-a.score||b.product.rating-a.product.rating||a.product.id-b.product.id).slice(0,limit);
 }
 function recentlyViewed(request:RecommendationRequest):RecommendedProduct[] {
+  if(!active(request.signals,"recentlyViewed"))return [];
   return request.signals.recentlyViewed.map((product,index)=>result(product,"recently-viewed",1-index/100,[{label:"Recently viewed",detail:"You opened this product on this device"}])).slice(0,request.limit??8);
 }
 function categoryBased(request:RecommendationRequest):RecommendedProduct[] {
+  if(!active(request.signals,"categoryInterest"))return [];
   const category=dominantCategory(request.signals,request.category??request.currentProduct?.category);if(!category)return [];
   return ranked(request.products.filter((product)=>product.category===category),"category-based",request.signals,request.currentProduct,request.limit??8)
     .map((item)=>({...item,reasons:[{label:"Category match",detail:"Based on your interest in "+category.replaceAll("-"," ")},...item.reasons.filter((reason)=>reason.label!=="Category interest")]}));
@@ -129,8 +141,9 @@ function frequentlyBought(request:RecommendationRequest):RecommendedProduct[] {
 }
 function personalized(request:RecommendationRequest):RecommendedProduct[] {
   const sources=sourceProducts(request.signals);
+  const hasSearch=active(request.signals,"searchHistory")&&request.signals.searchQueries.length>0;
   const items=ranked(request.products.filter((product)=>!sources.some((item)=>item.id===product.id)),"personalized",request.signals,request.currentProduct,request.limit??8);
-  if(items.length&&sources.length)return items;
+  if(items.length&&(sources.length||hasSearch))return items;
   return trending(request).map((item)=>({...item,strategy:"personalized",reasons:[{label:"Popular fallback",detail:"Signals are limited, so popular products provide a useful starting point"}]}));
 }
 export function getRecommendations(request:RecommendationRequest):RecommendedProduct[] {
