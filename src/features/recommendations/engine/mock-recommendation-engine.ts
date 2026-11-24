@@ -134,7 +134,8 @@ function frequentlyBought(request:RecommendationRequest):RecommendedProduct[] {
   return request.products.filter((product)=>product.stock>0&&!anchors.some((item)=>item.id===product.id)).map((product)=>{
     const strength=Math.max(0,...anchors.map((anchor)=>{
       const fixture=pairs.find((pair)=>pair.from===anchor.category&&pair.to===product.category);
-      const orderCoOccurrence=request.signals.purchases.some((purchase)=>purchase.category===anchor.category)&&request.signals.purchases.some((purchase)=>purchase.category===product.category)?0.9:0;
+      const purchases=active(request.signals,"purchases")?request.signals.purchases:[];
+      const orderCoOccurrence=purchases.some((purchase)=>purchase.category===anchor.category)&&purchases.some((purchase)=>purchase.category===product.category)?0.9:0;
       return Math.max(fixture?.strength??0,orderCoOccurrence);
     }));
     const score=clamp01(strength*0.8+scoreComponents(product,request.signals,request.currentProduct).score*0.2);
@@ -143,7 +144,7 @@ function frequentlyBought(request:RecommendationRequest):RecommendedProduct[] {
 }
 function personalized(request:RecommendationRequest):RecommendedProduct[] {
   const sources=sourceProducts(request.signals);
-  const hasSearch=active(request.signals,"searchHistory")&&request.signals.searchQueries.length>0;
+  const hasSearch=active(request.signals,"searchHistory")&&request.signals.searchQueries.some((query)=>request.products.some((product)=>searchRelevance(product,request.signals)>0));
   const items=ranked(request.products.filter((product)=>!sources.some((item)=>item.id===product.id)),"personalized",request.signals,request.currentProduct,request.limit??8);
   if(items.length&&(sources.length||hasSearch))return items;
   return trending(request).map((item)=>({...item,strategy:"personalized",reasons:[{label:"Popular fallback",detail:"Signals are limited, so popular products provide a useful starting point"}]}));
