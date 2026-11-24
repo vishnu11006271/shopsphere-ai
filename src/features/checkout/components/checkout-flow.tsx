@@ -39,8 +39,11 @@ export function CheckoutFlow(){
 const router=useRouter();
 const lines=useCartStore(s=>s.items);
 const cartHydrated=useCartStore(s=>s.hasHydrated);
-const clearCart=useCartStore(s=>s.clearCart);\nconst couponCode=useCartStore(s=>s.couponCode);
-const authSession=useAuthStore(s=>s.session);\nconst authUsers=useAuthStore(s=>s.users);\nconst authUser=useMemo(()=>authSession&&authSession.expiresAt>Date.now()?authUsers.find(user=>user.id===authSession.userId)??null:null,[authSession,authUsers]);
+const clearCart=useCartStore(s=>s.clearCart);
+const couponCode=useCartStore(s=>s.couponCode);
+const authSession=useAuthStore(s=>s.session);
+const authUsers=useAuthStore(s=>s.users);
+const authUser=useMemo(()=>authSession&&authSession.expiresAt>Date.now()?authUsers.find(user=>user.id===authSession.userId)??null:null,[authSession,authUsers]);
 const authHydrated=useAuthStore(s=>s.hasHydrated);
 const draft=useCheckoutStore(s=>s.draft);
 const orders=useCheckoutStore(s=>s.orders);
