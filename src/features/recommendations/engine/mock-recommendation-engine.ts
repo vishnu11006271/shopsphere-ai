@@ -19,7 +19,7 @@ function sourceCategories(signals: RecommendationSignals): string[] {
   if(active(signals,"searchHistory"))signals.searchQueries.forEach((query)=>{
     const q=normalize(query);
     sourceProducts(signals).forEach((product)=>{
-      if([product.category,product.brand??"",...(product.tags??[])].some((value)=>normalize(value).includes(q)||q.includes(normalize(value))))categories.push(product.category);
+      if([product.category,product.brand??"",...(product.tags??[])].some((value)=>{const normalized=normalize(value);return Boolean(normalized)&&(normalized.includes(q)||q.includes(normalized));}))categories.push(product.category);
     });
   });
   return categories;
@@ -35,7 +35,7 @@ function typicalPrice(signals:RecommendationSignals):number|null {
 }
 function searchRelevance(product:Product,signals:RecommendationSignals):number {
   if(!active(signals,"searchHistory")||!signals.searchQueries.length)return 0;
-  const fields=[product.title,product.brand??"",product.category,...(product.tags??[])].map(normalize);
+  const fields=[product.title,product.brand??"",product.category,...(product.tags??[])].map(normalize).filter(Boolean);
   return Math.max(0,...signals.searchQueries.map((query)=>{
     const q=normalize(query);if(!q)return 0;
     if(fields.some((field)=>field.includes(q)||q.includes(field)))return 1;
@@ -49,8 +49,11 @@ function categoryMatch(product:Product,signals:RecommendationSignals,anchor?:Pro
   return clamp01(Math.max(score,searchRelevance(product,signals)*0.85));
 }
 function priceSimilarity(product:Product,signals:RecommendationSignals,anchor?:Product):number {
-  const target=anchor?.price??typicalPrice(signals);if(target===null||target===undefined||target<=0)return 0;
-  return clamp01(1-Math.abs(product.price-target)/Math.max(target,1));
+  if(anchor){return anchor.price>0?clamp01(1-Math.abs(product.price-anchor.price)/anchor.price):0;}
+  const range=getRecommendationPriceRange(signals);if(!range)return 0;
+  if(product.price>=range.min&&product.price<=range.max)return 1;
+  const distance=product.price<range.min?range.min-product.price:product.price-range.max;
+  return clamp01(1-distance/Math.max(range.average,range.max-range.min,1));
 }
 function tagOverlap(product:Product,signals:RecommendationSignals,anchor?:Product):number {
   const sources=[...sourceProducts(signals),...(anchor?[anchor]:[])];
@@ -138,7 +141,7 @@ function frequentlyBought(request:RecommendationRequest):RecommendedProduct[] {
     }));
     const score=clamp01(strength*0.8+scoreComponents(product,request.signals,request.currentProduct).score*0.2);
     return result(product,"frequently-bought-together",score,[{label:strength>0?"Mock basket association":"Complementary match",detail:strength>0?"Frequently paired with an item in this category":"A complementary category suggestion from local mock data"}]);
-  }).filter((item)=>item.score>0.15).sort((a,b)=>b.score-a.score).slice(0,request.limit??8);
+  }).filter((item)=>item.score>0.15&&item.reasons[0].label==="Mock basket association").sort((a,b)=>b.score-a.score).slice(0,request.limit??8);
 }
 function personalized(request:RecommendationRequest):RecommendedProduct[] {
   const sources=sourceProducts(request.signals);
