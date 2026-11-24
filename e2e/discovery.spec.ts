@@ -17,14 +17,15 @@ test("search submits a query to a shareable results URL", async ({ page }) => {
 
 test("search suggestions wait for the debounce interval before requesting", async ({ page }) => {
   let searchRequests = 0;
+  await page.goto("/products");
+  await page.clock.install();
   await page.route("**/products/search**", async (route) => {
     searchRequests += 1;
     await route.continue();
   });
-  await page.goto("/products");
   await page.getByRole("textbox", { name: "Search products" }).fill("phone");
-  await page.waitForTimeout(200);
+  await page.clock.fastForward(200);
   expect(searchRequests).toBe(0);
-  await page.waitForTimeout(250);
+  await page.clock.fastForward(200);
   await expect.poll(() => searchRequests).toBe(1);
 });

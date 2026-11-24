@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("customer can resume checkout after refresh, place a mock order, and track it", async ({ page }) => {
   await page.goto("/products/1");
-  await page.getByRole("button", { name: "Add to Cart" }).click();
+  await page.getByRole("button", { name: "Add to Cart", exact: true }).click();
   await page.goto("/cart");
   await page.getByRole("button", { name: /Continue to checkout/ }).click();
   await expect(page).toHaveURL(/\/login\?next=%2Fcheckout/);
@@ -41,6 +41,7 @@ test("customer can resume checkout after refresh, place a mock order, and track 
   await page.getByLabel(/Express delivery/).check();
   await page.getByRole("button", { name: /Continue/ }).click();
   await expect(page.getByRole("heading", { name: "Order summary" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Because of Your Cart" })).toBeVisible();
   await page.getByRole("button", { name: /Continue/ }).click();
 
   await expect(page.getByRole("heading", { name: "Mock payment" })).toBeVisible();
@@ -60,7 +61,7 @@ test("customer can resume checkout after refresh, place a mock order, and track 
   await expect(page.getByRole("heading", { name: "Your orders" })).toBeVisible();
 
   await page.goto("/products/1");
-  await page.getByRole("button", { name: "Add to Cart" }).click();
+  await page.getByRole("button", { name: "Add to Cart", exact: true }).click();
   await page.goto("/cart");
   await page.getByRole("button", { name: /Continue to checkout/ }).click();
   await expect(page.getByRole("heading", { name: "Customer information" })).toBeVisible();

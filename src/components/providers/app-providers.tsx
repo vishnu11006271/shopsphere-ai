@@ -4,6 +4,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/store/cart-store";
 import { useWishlistStore } from "@/features/wishlist/store/wishlist-store";
+import { useRecentlyViewedStore } from "@/features/recommendations/store/recently-viewed-store";
+import { useRecommendationPreferencesStore } from "@/features/recommendations/store/recommendation-preferences-store";
+import { useRecommendationAnalyticsStore } from "@/features/recommendations/store/recommendation-analytics-store";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient({
@@ -13,6 +16,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     const syncPersistedStores = (event: StorageEvent) => {
       if (event.key === "shopsphere-cart") void useCartStore.persist.rehydrate();
       if (event.key === "shopsphere-wishlist") void useWishlistStore.persist.rehydrate();
+      if (event.key === "shopsphere-recently-viewed") void useRecentlyViewedStore.persist.rehydrate();
+      if (event.key === "shopsphere-recommendation-preferences") void useRecommendationPreferencesStore.persist.rehydrate();
+      if (event.key === "shopsphere-recommendation-analytics") void useRecommendationAnalyticsStore.persist.rehydrate();
     };
     window.addEventListener("storage", syncPersistedStores);
     return () => window.removeEventListener("storage", syncPersistedStores);

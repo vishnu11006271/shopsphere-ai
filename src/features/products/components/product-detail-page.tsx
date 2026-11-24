@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ChevronLeft, ChevronRight, Heart, Info, Minus, PackageCheck, Plus, ShieldCheck, ShoppingBag, Star, Truck } from "lucide-react";
@@ -14,21 +14,10 @@ import { productKeys, productService } from "@/features/products/services/produc
 import { clampProductQuantity, estimateDelivery, getDiscountedPrice, getSelectedStock } from "@/features/products/utils/product-detail";
 import { formatINR } from "@/lib/utils";
 import type { Product } from "@/types/product";
+import { RecommendationRail } from "@/features/recommendations/components/recommendation-rail";
+import { useRecentlyViewedStore } from "@/features/recommendations/store/recently-viewed-store";
 
 type Tab = "description" | "specifications";
-
-function ProductRail({ title, note, products }: { title: string; note: string; products: Product[] }) {
-  if (!products.length) return null;
-  return <section className="mt-14 border-t border-black/5 pt-10">
-    <div className="mb-5 flex flex-wrap items-end justify-between gap-2"><div><h2 className="text-xl font-bold tracking-tight">{title}</h2><p className="mt-1 text-xs text-muted">{note}</p></div><span className="rounded-full bg-[#e9efe8] px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-brand">Preview rail</span></div>
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-      {products.slice(0,4).map((item) => <Link key={item.id} href={`/products/${item.id}`} className="group rounded-2xl bg-white p-3 shadow-soft transition hover:-translate-y-0.5">
-        <div className="relative aspect-square overflow-hidden rounded-xl bg-[#f0f1eb]"><Image src={item.thumbnail} alt={item.title} fill sizes="(max-width:640px) 45vw, 220px" className="object-contain p-3 transition group-hover:scale-105"/></div>
-        <p className="mt-3 line-clamp-2 min-h-10 text-xs font-semibold">{item.title}</p><p className="mt-2 text-sm font-bold">{formatINR(item.price * 85)}</p>
-      </Link>)}
-    </div>
-  </section>;
-}
 
 function ReviewSection({ product }: { product: Product }) {
   const reviews = product.reviews ?? [];
@@ -51,18 +40,13 @@ export function ProductDetailPage({ productId }: { productId: number }) {
     queryFn: ({ signal }) => productService.getById(productId, signal),
     enabled: Number.isSafeInteger(productId) && productId > 0,
   });
-  const { data: relatedData } = useQuery({
-    queryKey: productKeys.related(product?.category ?? "", productId),
-    queryFn: ({ signal }) => productService.getByCategory(product!.category, signal),
-    enabled: Boolean(product?.category),
-  });
-  const { data: catalogueData } = useQuery({ queryKey: productKeys.catalogue, queryFn: ({ signal }) => productService.getAll(signal), enabled: Boolean(product) });
-  const { data: featuredData } = useQuery({ queryKey: productKeys.featured, queryFn: ({ signal }) => productService.getFeatured(signal), enabled: Boolean(product) });
   const addItem = useCartStore((state) => state.addItem);
   const cartCount = useCartStore((state) => state.items.reduce((sum, item) => sum + item.quantity, 0));
   const wishlistCount = useWishlistStore((state) => state.productIds.length);
   const saved = useWishlistStore((state) => state.productIds.includes(productId));
   const toggleWishlist = useWishlistStore((state) => state.toggle);
+  const addViewed = useRecentlyViewedStore((state) => state.addViewed);
+  useEffect(() => { if (product) addViewed(product); }, [product, addViewed]);
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState<Tab>("description");
   const [quantity, setQuantity] = useState(1);
@@ -74,10 +58,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
   const variant = product?.variants?.find((item) => item.id === selectedVariantId) ?? product?.variants?.find((item) => item.stock > 0) ?? product?.variants?.[0];
   const availableStock = product ? getSelectedStock(product, variant) : 0;
   const images = useMemo(() => product ? Array.from(new Set([product.thumbnail, ...product.images].filter(Boolean))) : [], [product]);
-  const related = useMemo(() => (relatedData?.products ?? []).filter((item) => item.id !== productId), [relatedData, productId]);
-  const similar = useMemo(() => related.filter((item) => item.tags?.some((tag) => product?.tags?.includes(tag))), [related, product]);
-  const boughtTogether = useMemo(() => (catalogueData?.products ?? []).filter((item) => item.id !== productId && item.category !== product?.category).slice(0,4), [catalogueData, productId, product]);
-  const recommended = useMemo(() => (featuredData?.products ?? []).filter((item) => item.id !== productId).slice(0,4), [featuredData, productId]);
+
 
   if (isPending) return <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6"><div className="h-5 w-32 animate-pulse rounded bg-stone-200"/><div className="mt-8 grid gap-8 lg:grid-cols-2"><div className="aspect-square animate-pulse rounded-3xl bg-stone-200"/><div className="space-y-4"><div className="h-8 w-3/4 animate-pulse rounded bg-stone-200"/><div className="h-5 w-1/3 animate-pulse rounded bg-stone-200"/><div className="h-32 animate-pulse rounded bg-stone-200"/></div></div></main>;
   if (isError || !product) return <main className="mx-auto grid min-h-[65vh] max-w-xl place-content-center px-5 text-center"><div className="mx-auto grid size-14 place-items-center rounded-full bg-rose-50 text-rose-600"><Info/></div><h1 className="mt-5 text-2xl font-bold">We couldn&apos;t load this product</h1><p className="mt-2 text-sm text-muted">The product may be unavailable, or the connection may have failed.</p><div className="mt-6 flex justify-center gap-3"><Button variant="secondary" onClick={() => router.back()}>Go back</Button><Button onClick={() => void refetch()}>Try again</Button></div></main>;
@@ -125,10 +106,10 @@ export function ProductDetailPage({ productId }: { productId: number }) {
       </section>
     </div>
     <ReviewSection product={product}/>
-    <ProductRail title="Related Products" note="Same-category catalogue items. Strategy-specific recommendation scoring will be introduced in Phase 07." products={related}/>
-    <ProductRail title="Similar Products" note="A tag-overlap preview, kept separate from the related-category rail." products={similar}/>
-    <ProductRail title="Frequently Bought Together" note="Cross-category catalogue suggestions shown as a placeholder until mock co-occurrence data is implemented." products={boughtTogether}/>
-    <ProductRail title="Recommended For You" note="Popular catalogue preview only; personalized signal scoring will be implemented in Phase 07." products={recommended}/>
+    <RecommendationRail strategy="similar-products" title="Similar Products" note="Ranked by category, shared tags, price similarity and product rating." currentProduct={product}/>
+    <RecommendationRail strategy="category-based" title="Related Products" note={"Category-based suggestions for " + product.category + "."} category={product.category} currentProduct={product}/>
+    <RecommendationRail strategy="frequently-bought-together" title="Frequently Bought Together" note="Uses local co-purchase category fixtures and your own order/cart context." currentProduct={product}/>
+    <RecommendationRail strategy="personalized" title="Recommended For You" note="A weighted blend of your available signals." currentProduct={product}/>
     {zoomOpen&&<div role="dialog" aria-modal="true" aria-label="Product image zoom" onClick={()=>setZoomOpen(false)} className="fixed inset-0 z-50 grid place-items-center bg-black/80 p-4"><button type="button" onClick={()=>setZoomOpen(false)} className="absolute right-5 top-5 rounded-full bg-white px-4 py-2 text-sm font-semibold">Close</button><div className="relative h-[80vh] w-full max-w-4xl"><Image src={currentImage} alt={product.title} fill sizes="90vw" className="object-contain"/></div></div>}
   </main>;
 }
