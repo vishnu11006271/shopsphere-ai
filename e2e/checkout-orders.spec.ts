@@ -29,11 +29,11 @@ test("customer can resume checkout after refresh, place a mock order, and track 
     localStorage.setItem("shopsphere-auth", JSON.stringify(persisted));
   });
   await page.reload();
-  await expect(page).toHaveURL(/\\/login\\?next=%2Fcheckout/);
+  await expect(page).toHaveURL("http://127.0.0.1:3000/login?next=%2Fcheckout");
   await page.getByLabel("Email address").fill("customer@shopsphere.demo");
   await page.getByLabel("Password").fill("Customer@123");
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page).toHaveURL(/\\/checkout$/);
+  await expect(page).toHaveURL("http://127.0.0.1:3000/checkout");
   await expect(page.getByLabel("Street address")).toHaveValue("12 MG Road, Indiranagar");
   await page.getByRole("button", { name: /Continue/ }).click();
 
