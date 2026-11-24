@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("product can be added to cart and quantity controls update", async ({ page }) => {
   await page.goto("/products/1");
-  await page.getByRole("button", { name: "Add to Cart" }).click();
+  await page.getByRole("button", { name: "Add to Cart", exact: true }).click();
   await page.goto("/cart");
   await expect(page.getByRole("heading", { name: "Your cart", exact: true })).toBeVisible();
   await expect(page.getByText("Subtotal")).toBeVisible();
