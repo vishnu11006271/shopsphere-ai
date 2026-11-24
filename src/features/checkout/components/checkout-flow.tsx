@@ -51,7 +51,7 @@ const checkoutHydrated=useCheckoutStore(s=>s.hasHydrated);
 const updateDraft=useCheckoutStore(s=>s.updateDraft);
 const updateCustomer=useCheckoutStore(s=>s.updateCustomer);
 const updateAddress=useCheckoutStore(s=>s.updateAddress);
-const createOrder=useCheckoutStore(s=>s.createOrder);
+const createOrder=useCheckoutStore(s=>s.createOrder);\nconst resetDraft=useCheckoutStore(s=>s.resetDraft);
 const [customerErrors,setCustomerErrors]=useState<Record<string,string>>({});
 const [addressErrors,setAddressErrors]=useState<Record<string,string>>({});
 const [paymentError,setPaymentError]=useState("");
@@ -71,7 +71,7 @@ if(!draft.customer.name)updateCustomer({name:authUser.name,email:authUser.email}
 if(!draft.address.fullName)updateAddress({fullName:authUser.name,phone:draft.customer.phone});
 }
 setInitialised(true);
-},[authHydrated,authUser,cartHydrated,checkoutHydrated,draft.address.fullName,draft.completedOrderId,draft.customer.email,draft.customer.name,initialised,lines.length,order,router,updateAddress,updateCustomer]);
+},[authHydrated,authUser,cartHydrated,checkoutHydrated,draft.address.fullName,draft.completedOrderId,draft.customer.email,draft.customer.name,initialised,lines.length,order,router,resetDraft,updateAddress,updateCustomer]);
 
 if(!cartHydrated||!checkoutHydrated||!authHydrated||!initialised)return <main className="mx-auto max-w-5xl px-5 py-16"><p role="status" className="text-sm text-muted">Restoring your saved checkout…</p></main>;
 if(draft.completedOrderId&&order)return <main className="mx-auto max-w-5xl px-5 py-12"><OrderConfirmation order={order}/></main>;
