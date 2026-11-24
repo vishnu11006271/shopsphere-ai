@@ -3,8 +3,8 @@ import type { Product } from "@/types/product";
 import type { RecommendationRequest, RecommendationSignals, RecommendationStrategy, RecommendedProduct, RecommendationWeights } from "../types";
 
 export const RECOMMENDATION_WEIGHTS: RecommendationWeights = {
-  categoryMatch: 0.20, priceSimilarity: 0.14, tagOverlap: 0.18, normalizedRating: 0.10,
-  recentlyViewedRelation: 0.14, wishlistRelation: 0.12, cartRelation: 0.12,
+  categoryMatch: 0.18, priceSimilarity: 0.13, tagOverlap: 0.16, normalizedRating: 0.09,
+  recentlyViewedRelation: 0.13, wishlistRelation: 0.11, cartRelation: 0.11, purchaseRelation: 0.09,
 };
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
 const normalize = (value: string) => value.trim().toLowerCase().replace(/[^a-z0-9]+/g, " ");
@@ -69,6 +69,10 @@ function relation(candidate:Product,sources:Product[]):number {
   if(!sources.length)return 0;
   return Math.max(...sources.filter((item)=>item.id!==candidate.id).map((item)=>similarity(candidate,item)),0);
 }
+function purchaseRelation(candidate:Product,purchases:Product[]):number {
+  if(purchases.some((purchase)=>purchase.id===candidate.id))return 1;
+  return relation(candidate,purchases);
+}
 function brandAffinity(product:Product,signals:RecommendationSignals):number {
   if(!active(signals,"brandPreference")||!product.brand)return 0;
   const brands=(active(signals,"recentlyViewed")?signals.recentlyViewed:[]).map((item)=>item.brand).filter((brand):brand is string=>Boolean(brand));
@@ -85,12 +89,13 @@ function scoreComponents(product:Product,signals:RecommendationSignals,anchor?:P
     recentlyViewedRelation:relation(product,active(signals,"recentlyViewed")&&signals.recentlyViewed.length?signals.recentlyViewed:anchor?[anchor]:[]),
     wishlistRelation:relation(product,active(signals,"wishlist")?signals.wishlist:[]),
     cartRelation:relation(product,active(signals,"cart")?signals.cart:[]),
+    purchaseRelation:active(signals,"purchases")?purchaseRelation(product,signals.purchases):0,
   };
   const weighted=Object.entries(components).reduce((sum,[key,value])=>sum+value*weights[key as keyof RecommendationWeights],0);
   return {components,score:clamp01(weighted+brandAffinity(product,signals)*0.05)};
 }
 function reasonsFor(components:ReturnType<typeof scoreComponents>["components"],product:Product):RecommendedProduct["reasons"] {
-  const labels:Record<keyof typeof components,string>={categoryMatch:"Category interest",priceSimilarity:"Price fit",tagOverlap:"Shared product tags",normalizedRating:"Customer rating",recentlyViewedRelation:"Browsing similarity",wishlistRelation:"Wishlist similarity",cartRelation:"Cart compatibility"};
+  const labels:Record<keyof typeof components,string>={categoryMatch:"Category interest",priceSimilarity:"Price fit",tagOverlap:"Shared product tags",normalizedRating:"Customer rating",recentlyViewedRelation:"Browsing similarity",wishlistRelation:"Wishlist similarity",cartRelation:"Cart compatibility",purchaseRelation:"Previously purchased"};
   return (Object.entries(components) as [keyof typeof components,number][]).filter(([,value])=>value>=0.2).sort((a,b)=>b[1]-a[1]).slice(0,3)
     .map(([key,value])=>({label:labels[key],detail:key==="normalizedRating"?product.rating.toFixed(1)+" out of 5":key==="priceSimilarity"?"Within your observed price range":Math.round(value*100)+"% signal match"}));
 }
@@ -144,9 +149,11 @@ function frequentlyBought(request:RecommendationRequest):RecommendedProduct[] {
 }
 function personalized(request:RecommendationRequest):RecommendedProduct[] {
   const sources=sourceProducts(request.signals);
+  const repeatEligible=active(request.signals,"purchases")?request.signals.purchases:[];
+  const excluded=new Set([...request.signals.recentlyViewed.filter(()=>active(request.signals,"recentlyViewed")),...request.signals.wishlist.filter(()=>active(request.signals,"wishlist")),...request.signals.cart.filter(()=>active(request.signals,"cart"))].map((product)=>product.id));
   const hasSearch=active(request.signals,"searchHistory")&&request.products.some((product)=>searchRelevance(product,request.signals)>0);
-  const items=ranked(request.products.filter((product)=>!sources.some((item)=>item.id===product.id)),"personalized",request.signals,request.currentProduct,request.limit??8).filter((item)=>item.score>=0.18);
-  if(items.length&&(sources.length||hasSearch))return items;
+  const items=ranked(request.products.filter((product)=>!excluded.has(product.id)),"personalized",request.signals,request.currentProduct,request.limit??8).filter((item)=>item.score>=0.18);
+  if(items.length&&(sources.length||hasSearch||repeatEligible.length))return items;
   return trending(request).map((item)=>({...item,strategy:"personalized",reasons:[{label:"Popular fallback",detail:"Signals are limited, so popular products provide a useful starting point"}]}));
 }
 export function getRecommendations(request:RecommendationRequest):RecommendedProduct[] {
@@ -162,7 +169,7 @@ export function getRecommendations(request:RecommendationRequest):RecommendedPro
   return personalized(request);
 }
 export function getRecommendationPriceRange(signals:RecommendationSignals) {
-  const prices=sourceProducts(signals).map((product)=>product.price).filter((price)=>price>0);
+  const prices=[...(active(signals,"recentlyViewed")?signals.recentlyViewed:[]),...(active(signals,"cart")?signals.cart:[])].map((product)=>product.price).filter((price)=>price>0);
   if(!prices.length)return null;
   return {min:Math.min(...prices),max:Math.max(...prices),average:prices.reduce((sum,value)=>sum+value,0)/prices.length,sampleSize:prices.length};
 }
