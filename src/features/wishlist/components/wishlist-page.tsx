@@ -12,6 +12,7 @@ import { productKeys, productService } from "@/features/products/services/produc
 import { useCartStore } from "@/store/cart-store";
 import { useWishlistStore } from "@/features/wishlist/store/wishlist-store";
 import type { Product } from "@/types/product";
+import { RecommendationRail } from "@/features/recommendations/components/recommendation-rail";
 
 export function WishlistPage() {
   const { data, isPending, isError, refetch } = useQuery({
@@ -29,8 +30,6 @@ export function WishlistPage() {
   const liveById = useMemo(() => new Map((data?.products ?? []).map((item) => [item.id, item])), [data]);
   const wishlistProducts = productIds.map((id) => ({ id, product: liveById.get(id) ?? snapshotById.get(id), isMissing: Boolean(data && !liveById.has(id)) }));
   useEffect(() => { if (data) for (const id of productIds) { const product = liveById.get(id); if (product) saveProduct(product); } }, [data, productIds, liveById, saveProduct]);
-  const categories = new Set(wishlistProducts.map((entry) => entry.product?.category).filter(Boolean));
-  const suggestions = (data?.products ?? []).filter((product) => product.stock > 0 && !productIds.includes(product.id) && categories.has(product.category)).slice(0,4);
 
   if (!hasHydrated || (isPending && productIds.length === 0)) return <main className="mx-auto max-w-6xl px-5 py-10"><div className="h-8 w-48 animate-pulse rounded bg-stone-200"/><div className="mt-8 h-48 animate-pulse rounded-3xl bg-white"/></main>;
 
@@ -49,6 +48,6 @@ export function WishlistPage() {
           </div>
         </article>;
       })}</section>}
-    {suggestions.length>0&&<section className="mt-14 border-t border-black/5 pt-9"><div className="mb-5"><h2 className="text-xl font-semibold">Because of your Wishlist</h2><p className="mt-1 text-xs text-muted">More in categories represented by your saved items. Full Wishlist-Based recommendation scoring arrives in Phase 07.</p></div><div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{suggestions.map((product:Product)=><Link key={product.id} href={`/products/${product.id}`} className="rounded-2xl bg-white p-3 shadow-soft"><div className="relative aspect-square rounded-xl bg-canvas"><Image src={product.thumbnail} alt={product.title} fill sizes="160px" className="object-contain p-3"/></div><p className="mt-2 line-clamp-2 min-h-9 text-xs font-semibold">{product.title}</p><p className="mt-1 text-xs font-bold">{formatAmount(unitPriceINR({product,quantity:1}))}</p></Link>)}</div></section>}
+    <RecommendationRail strategy="wishlist-based" title="Because of your Wishlist" note="Products ranked against the categories, tags and prices of items you saved." limit={4}/>
   </main>;
 }
