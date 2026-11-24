@@ -13,25 +13,13 @@ import { useWishlistStore } from "@/features/wishlist/store/wishlist-store";
 import { productKeys, productService } from "@/features/products/services/product-service";
 import { clampProductQuantity, estimateDelivery, getDiscountedPrice, getSelectedStock } from "@/features/products/utils/product-detail";
 import { formatINR } from "@/lib/utils";
-import type { Product } from "@/types/product";
 import { RecommendationRail } from "@/features/recommendations/components/recommendation-rail";
 import { useRecentlyViewedStore } from "@/features/recommendations/store/recently-viewed-store";
+import { ProductReviews } from "@/features/reviews/components/product-reviews";
 
 type Tab = "description" | "specifications";
 
-function ReviewSection({ product }: { product: Product }) {
-  const reviews = product.reviews ?? [];
-  return <section className="mt-14 border-t border-black/5 pt-10" id="reviews">
-    <div className="flex flex-wrap items-center justify-between gap-4">
-      <div><h2 className="text-xl font-bold">Customer reviews</h2><p className="mt-1 text-sm text-muted">Ratings and comments supplied with the product catalogue.</p></div>
-      <div className="flex items-center gap-2 rounded-2xl bg-white px-4 py-3 shadow-soft"><Star className="fill-accent text-accent" size={20}/><span className="text-2xl font-bold">{product.rating.toFixed(1)}</span><span className="text-xs text-muted">/ 5</span></div>
-    </div>
-    {reviews.length ? <div className="mt-6 grid gap-3 md:grid-cols-2">{reviews.map((review, index) => <article key={`${review.reviewerName}-${index}`} className="rounded-2xl bg-white p-5 shadow-soft">
-      <div className="flex items-center justify-between gap-3"><p className="text-sm font-semibold">{review.reviewerName}</p><span className="flex items-center gap-1 text-xs text-muted"><Star size={12} className="fill-accent text-accent"/>{review.rating}/5</span></div>
-      <p className="mt-3 text-sm leading-6 text-muted">{review.comment}</p><p className="mt-3 text-[11px] text-muted">{new Date(review.date).toLocaleDateString()}</p>
-    </article>)}</div> : <div className="mt-6 rounded-2xl border border-dashed border-black/15 bg-white/60 p-6 text-sm text-muted">No written reviews are available from the catalogue for this product yet.</div>}
-  </section>;
-}
+
 
 export function ProductDetailPage({ productId }: { productId: number }) {
   const router = useRouter();
@@ -83,7 +71,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
       </section>
       <section className="lg:pt-2">
         <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[.18em] text-brand">{product.brand || "ShopSphere selection"}</p><h1 className="mt-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">{product.title}</h1></div><button type="button" onClick={()=>toggleWishlist(product.id, product)} aria-label={saved?"Remove from wishlist":"Add to wishlist"} aria-pressed={saved} className="shrink-0 rounded-full bg-white p-3 text-ink shadow-soft hover:text-rose-600"><Heart className={saved?"fill-rose-500 text-rose-500":""}/></button></div>
-        <div className="mt-4 flex flex-wrap items-center gap-3 text-sm"><span className="flex items-center gap-1 font-semibold"><Star size={16} className="fill-accent text-accent"/>{product.rating.toFixed(1)}</span><a href="#reviews" className="text-muted underline-offset-4 hover:underline">{product.reviews?.length ?? 0} catalogue reviews</a><span className="text-muted">·</span><span className={availableStock>0?"text-emerald-700":"text-rose-600"}>{stockLabel}</span></div>
+        <div className="mt-4 flex flex-wrap items-center gap-3 text-sm"><span className="flex items-center gap-1 font-semibold"><Star size={16} className="fill-accent text-accent"/>{product.rating.toFixed(1)}</span><a href="#reviews" className="text-muted underline-offset-4 hover:underline">Read customer reviews</a><span className="text-muted">·</span><span className={availableStock>0?"text-emerald-700":"text-rose-600"}>{stockLabel}</span></div>
         <div className="mt-6 flex flex-wrap items-baseline gap-3"><span className="text-3xl font-bold">{formatINR(getDiscountedPrice(product)*85)}</span>{product.discountPercentage>0&&<><span className="text-lg text-muted line-through">{formatINR(product.price*85)}</span><span className="rounded-full bg-[#f4e7d1] px-3 py-1 text-xs font-bold text-[#8b5a13]">Save {Math.round(product.discountPercentage)}%</span></>}</div>
         <p className="mt-3 text-xs text-muted">Displayed INR amount is an illustrative conversion of the mock catalogue price, not a live exchange-rate quote.</p>
         <div className="mt-7 border-t border-black/10 pt-6">
@@ -105,7 +93,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
         </div>
       </section>
     </div>
-    <ReviewSection product={product}/>
+    <ProductReviews product={product}/>
     <RecommendationRail strategy="similar-products" title="Similar Products" note="Ranked by category, shared tags, price similarity and product rating." currentProduct={product}/>
     <RecommendationRail strategy="category-based" title="Related Products" note={"Category-based suggestions for " + product.category + "."} category={product.category} currentProduct={product}/>
     <RecommendationRail strategy="frequently-bought-together" title="Frequently Bought Together" note="Uses local co-purchase category fixtures and your own order/cart context." currentProduct={product}/>
