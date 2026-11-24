@@ -81,15 +81,15 @@ The recommendation implementation follows the PRD's enforced boundary: UI rail �
 - \`recommendation-analytics-store.ts\` records local rail impressions, product clicks, and add-to-cart actions keyed by strategy and product ID. This is browser-local demo analytics, not an external analytics service.
 
 ### Nine strategies and placements
-1. Recently Viewed — stored PDP history in most-recent-first order; homepage.
+1. Recently Viewed — stored PDP history in most-recent-first order; homepage and header dropdown.
 2. Similar Products — current PDP anchor, category, Jaccard tag overlap and price similarity; PDP.
 3. Category-Based — current or dominant category interest; homepage, category discovery and PDP.
 4. Price-Based — candidates ranked against the min/max price band inferred from viewed, saved, carted and purchased products; homepage and search results.
-5. Wishlist-Based — candidate similarity to saved products; wishlist page.
-6. Cart-Based — candidate similarity to active cart products; cart page.
+5. Wishlist-Based — candidate similarity to saved products; wishlist page and homepage.
+6. Cart-Based — candidate similarity to active cart products; cart page and checkout order summary.
 7. Frequently Bought Together — deterministic category co-purchase fixture plus observed category co-occurrence in local order history; PDP. It does not invent a generic bundle when no association exists.
 8. Trending Products — explicit mock product popularity, category popularity and rating-velocity values from \`public/mock-data/recommendation-signals.json\`; homepage.
-9. Personalized For You — weighted blend of the available category, price, tags, rating, recently-viewed, wishlist and cart signals; homepage and PDP. With no meaningful history, it falls back to the trending ranking.
+9. Personalized For You — weighted blend of the available category, price, tags, rating, recently-viewed, wishlist and cart signals; homepage, customer dashboard and PDP. With no meaningful history, it falls back to the trending ranking.
 
 ### Auditable weighted scoring
 Each of the seven PRD scoring components is normalized to 0–1. The chosen implementation weights sum to 1.00:
