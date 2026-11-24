@@ -25,6 +25,12 @@ describe("assistant service", () => {
     expect(result.text).toContain("up to ₹5,000");
   });
 
+  it("uses the existing Similar Products strategy for a referenced result", () => {
+    const result = respondToShoppingRequest("Show me more like the second one", products, categories, { previousResults: products });
+    expect(result.products.map((product) => product.id)).toEqual([1]);
+    expect(result.text).toContain("similar to Premium Earbuds");
+  });
+
   it("asks a clarifying question for unparseable text", () => {
     const result = respondToShoppingRequest("hmm not sure", products, categories);
     expect(result.products).toHaveLength(0);
