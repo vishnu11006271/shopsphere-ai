@@ -43,16 +43,13 @@ export function useRecommendations(options: {
       const catalogue=needsCatalogue
         ? await queryClient.fetchQuery({queryKey:productKeys.catalogue,queryFn:({signal:catalogueSignal})=>productService.getAll(catalogueSignal),staleTime:120_000})
         : {products:recentlyViewed};
-      const liveById=new Map(catalogue.products.map((product)=>[product.id,product]));
-      const wishlist=wishlistIds.map((id)=>liveById.get(id)??wishlistSnapshots.find((item)=>item.id===id)).filter((item):item is Product=>Boolean(item));
-      const purchases=purchaseIds.map((id)=>liveById.get(id)).filter((item):item is Product=>Boolean(item));
-      const signals={
-        recentlyViewed,searchQueries,wishlist,cart:cartProducts,purchases,
-        currentCategory:options.category,
-        enabledSignals,
-      };
       return recommendationService.recommend({
-        strategy:options.strategy,products:catalogue.products,signals,
+        strategy:options.strategy,
+        products:catalogue.products,
+        context:{
+          recentlyViewed,searchQueries,wishlistIds,wishlistSnapshots,cart:cartProducts,
+          purchaseIds,currentCategory:options.category,enabledSignals,
+        },
         currentProduct:options.currentProduct,category:options.category,limit:options.limit,
       });
     },
