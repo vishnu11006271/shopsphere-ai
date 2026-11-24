@@ -109,7 +109,8 @@ function recentlyViewed(request:RecommendationRequest):RecommendedProduct[] {
 function categoryBased(request:RecommendationRequest):RecommendedProduct[] {
   if(!active(request.signals,"categoryInterest"))return [];
   const category=dominantCategory(request.signals,request.category??request.currentProduct?.category);if(!category)return [];
-  return ranked(request.products.filter((product)=>product.category===category),"category-based",request.signals,request.currentProduct,request.limit??8)
+  const alreadyKnown=new Set(sourceProducts(request.signals).map((product)=>product.id));
+  return ranked(request.products.filter((product)=>product.category===category&&!alreadyKnown.has(product.id)),"category-based",request.signals,request.currentProduct,request.limit??8)
     .map((item)=>({...item,reasons:[{label:"Category match",detail:"Based on your interest in "+category.replaceAll("-"," ")},...item.reasons.filter((reason)=>reason.label!=="Category interest")]}));
 }
 function priceBased(request:RecommendationRequest):RecommendedProduct[] {
@@ -150,7 +151,7 @@ function personalized(request:RecommendationRequest):RecommendedProduct[] {
 export function getRecommendations(request:RecommendationRequest):RecommendedProduct[] {
   const strategy=request.strategy;
   if(strategy==="recently-viewed")return recentlyViewed(request);
-  if(strategy==="similar-products")return ranked(request.products,"similar-products",request.signals,request.currentProduct,request.limit??8).map((item)=>({...item,reasons:[{label:"Similar to this product",detail:"Category, tags and price compared with the product you are viewing"},...item.reasons.filter((reason)=>reason.label!=="Category interest")]}));
+  if(strategy==="similar-products"){const alreadyKnown=new Set(sourceProducts(request.signals).map((product)=>product.id));return ranked(request.products.filter((product)=>!alreadyKnown.has(product.id)),"similar-products",request.signals,request.currentProduct,request.limit??8).map((item)=>({...item,reasons:[{label:"Similar to this product",detail:"Category, tags and price compared with the product you are viewing"},...item.reasons.filter((reason)=>reason.label!=="Category interest")]}));}
   if(strategy==="category-based")return categoryBased(request);
   if(strategy==="price-based")return priceBased(request);
   if(strategy==="wishlist-based"){if(!active(request.signals,"wishlist"))return [];return ranked(request.products,"wishlist-based",request.signals,undefined,request.limit??8).filter((item)=>!request.signals.wishlist.some((saved)=>saved.id===item.product.id)).map((item)=>({...item,reasons:[{label:"Because of your wishlist",detail:"Matches products and categories you saved"},...item.reasons]}));}
