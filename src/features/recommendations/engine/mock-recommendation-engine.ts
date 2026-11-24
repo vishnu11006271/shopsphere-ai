@@ -24,9 +24,10 @@ function sourceCategories(signals: RecommendationSignals): string[] {
   });
   return categories;
 }
-function dominantCategory(signals: RecommendationSignals,fallback?:string):string {
+function dominantCategory(signals: RecommendationSignals,fallback?:string,products:Product[]=[]):string {
   if(fallback)return fallback;
   const counts=new Map<string,number>();sourceCategories(signals).forEach((category)=>counts.set(category,(counts.get(category)??0)+1));
+  if(active(signals,"searchHistory"))products.forEach((product)=>{const relevance=searchRelevance(product,signals);if(relevance>0)counts.set(product.category,(counts.get(product.category)??0)+relevance);});
   return [...counts.entries()].sort((a,b)=>b[1]-a[1])[0]?.[0]??"";
 }
 function searchRelevance(product:Product,signals:RecommendationSignals):number {
@@ -113,7 +114,7 @@ function recentlyViewed(request:RecommendationRequest):RecommendedProduct[] {
 }
 function categoryBased(request:RecommendationRequest):RecommendedProduct[] {
   if(!active(request.signals,"categoryInterest"))return [];
-  const category=dominantCategory(request.signals,request.category??request.currentProduct?.category);if(!category)return [];
+  const category=dominantCategory(request.signals,request.category??request.currentProduct?.category,request.products);if(!category)return [];
   const alreadyKnown=new Set(sourceProducts(request.signals).map((product)=>product.id));
   return ranked(request.products.filter((product)=>product.category===category&&!alreadyKnown.has(product.id)),"category-based",request.signals,request.currentProduct,request.limit??8)
     .map((item)=>({...item,reasons:[{label:"Category match",detail:"Based on your interest in "+category.replaceAll("-"," ")},...item.reasons.filter((reason)=>reason.label!=="Category interest")]}));
