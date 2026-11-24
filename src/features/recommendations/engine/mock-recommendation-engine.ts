@@ -75,7 +75,7 @@ function purchaseRelation(candidate:Product,purchases:Product[]):number {
 }
 function brandAffinity(product:Product,signals:RecommendationSignals):number {
   if(!active(signals,"brandPreference")||!product.brand)return 0;
-  const brands=(active(signals,"recentlyViewed")?signals.recentlyViewed:[]).map((item)=>item.brand).filter((brand):brand is string=>Boolean(brand));
+  const brands=signals.recentlyViewed.map((item)=>item.brand).filter((brand):brand is string=>Boolean(brand));
   if(!brands.length)return 0;
   return clamp01(brands.filter((brand)=>normalize(brand)===normalize(product.brand??"")).length/brands.length);
 }
@@ -152,7 +152,7 @@ function personalized(request:RecommendationRequest):RecommendedProduct[] {
   const repeatEligible=active(request.signals,"purchases")?request.signals.purchases:[];
   const excluded=new Set([...request.signals.recentlyViewed.filter(()=>active(request.signals,"recentlyViewed")),...request.signals.wishlist.filter(()=>active(request.signals,"wishlist")),...request.signals.cart.filter(()=>active(request.signals,"cart"))].map((product)=>product.id));
   const hasSearch=active(request.signals,"searchHistory")&&request.products.some((product)=>searchRelevance(product,request.signals)>0);
-  const items=ranked(request.products.filter((product)=>!excluded.has(product.id)),"personalized",request.signals,request.currentProduct,request.limit??8).filter((item)=>item.score>=0.18);
+  const items=ranked(request.products.filter((product)=>!excluded.has(product.id)),"personalized",request.signals,request.currentProduct,request.limit??8).filter((item)=>item.score>=0.12);
   if(items.length&&(sources.length||hasSearch||repeatEligible.length))return items;
   return trending(request).map((item)=>({...item,strategy:"personalized",reasons:[{label:"Popular fallback",detail:"Signals are limited, so popular products provide a useful starting point"}]}));
 }
