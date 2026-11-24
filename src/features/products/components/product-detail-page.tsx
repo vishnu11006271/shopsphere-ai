@@ -107,7 +107,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
     </div>
     <ReviewSection product={product}/>
     <RecommendationRail strategy="similar-products" title="Similar Products" note="Ranked by category, shared tags, price similarity and product rating." currentProduct={product}/>
-    <RecommendationRail strategy="category-based" title={"More in " + product.category} note="Based on the category of the product you are viewing." category={product.category} currentProduct={product}/>
+    <RecommendationRail strategy="category-based" title="Related Products" note={"Category-based suggestions for " + product.category + "."} category={product.category} currentProduct={product}/>
     <RecommendationRail strategy="frequently-bought-together" title="Frequently Bought Together" note="Uses local co-purchase category fixtures and your own order/cart context." currentProduct={product}/>
     <RecommendationRail strategy="personalized" title="Recommended For You" note="A weighted blend of your available signals." currentProduct={product}/>
     {zoomOpen&&<div role="dialog" aria-modal="true" aria-label="Product image zoom" onClick={()=>setZoomOpen(false)} className="fixed inset-0 z-50 grid place-items-center bg-black/80 p-4"><button type="button" onClick={()=>setZoomOpen(false)} className="absolute right-5 top-5 rounded-full bg-white px-4 py-2 text-sm font-semibold">Close</button><div className="relative h-[80vh] w-full max-w-4xl"><Image src={currentImage} alt={product.title} fill sizes="90vw" className="object-contain"/></div></div>}
