@@ -1,4 +1,4 @@
-import type { Product, ProductCategory } from "@/types/product";
+import type { ProductCategory } from "@/types/product";
 import type { AssistantConversationContext, AssistantIntent, IntentParseResult } from "../types";
 
 const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();

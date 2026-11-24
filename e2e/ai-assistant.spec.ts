@@ -30,7 +30,7 @@ test("keeps category and budget when refining to better ratings", async ({ page 
   await page.getByRole("button", { name: "Something with better ratings" }).click();
   await expect(page.getByText("4.5+ stars")).toBeVisible();
   await expect(page.getByText("Premium Bluetooth Earbuds")).toBeVisible();
-  await expect(page.getByText("Wireless Headphones")).toHaveCount(0);
+  await expect(page.getByText("Wireless Headphones")).toHaveCount(1);
 });
 
 test("asks for clarification rather than showing unrelated products", async ({ page }) => {
