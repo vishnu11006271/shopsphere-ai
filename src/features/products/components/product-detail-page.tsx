@@ -13,7 +13,6 @@ import { useWishlistStore } from "@/features/wishlist/store/wishlist-store";
 import { productKeys, productService } from "@/features/products/services/product-service";
 import { clampProductQuantity, estimateDelivery, getDiscountedPrice, getSelectedStock } from "@/features/products/utils/product-detail";
 import { formatINR } from "@/lib/utils";
-import type { Product } from "@/types/product";
 import { RecommendationRail } from "@/features/recommendations/components/recommendation-rail";
 import { useRecentlyViewedStore } from "@/features/recommendations/store/recently-viewed-store";
 import { ProductReviews } from "@/features/reviews/components/product-reviews";

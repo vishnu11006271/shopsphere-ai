@@ -57,7 +57,7 @@ export const productService = {
   },
   getByCategory: async (slug: string, signal?: AbortSignal) => {
     await waitForAdminCatalogHydration();
-    const result = await apiGet<ProductListResponse>(`/products/category/${encodeURIComponent(slug)}?limit=0`);
+    const result = await apiGet<ProductListResponse>(`/products/category/${encodeURIComponent(slug)}?limit=0`, signal);
     return response(mergeLocalCandidates(result.products).filter((product) => product.category === slug));
   },
   discover: async (query: string, category: string, signal?: AbortSignal) => {
