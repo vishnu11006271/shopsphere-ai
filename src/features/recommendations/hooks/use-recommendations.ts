@@ -9,6 +9,7 @@ import { useSearchHistoryStore } from "@/features/search/store/search-history-st
 import { useRecentlyViewedStore } from "../store/recently-viewed-store";
 import { useRecommendationPreferencesStore } from "../store/recommendation-preferences-store";
 import { recommendationService } from "../services/recommendation-service";
+import type { Product } from "@/types/product";
 import type { RecommendationStrategy } from "../types";
 
 export function useRecommendations(options: {
