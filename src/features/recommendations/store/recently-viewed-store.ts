@@ -16,7 +16,7 @@ export const useRecentlyViewedStore = create<RecentlyViewedState>()(persist((set
   hasHydrated: false,
   setHasHydrated: (value) => set({ hasHydrated: value }),
   addViewed: (product) => set((state) => ({
-    entries: [{ product, viewedAt: new Date().toISOString() }, ...state.entries.filter((entry) => entry.product.id !== product.id)].slice(0, 20),
+    entries: [{ product, viewedAt: new Date().toISOString() }, ...state.entries.filter((entry) => entry.product.id !== product.id)],
   })),
   clear: () => set({ entries: [] }),
 }), {
