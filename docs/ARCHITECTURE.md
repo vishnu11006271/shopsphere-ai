@@ -71,7 +71,7 @@ DummyJSON product prices are source values, not INR-denominated prices. The curr
 
 
 ## Recommendation engine (Phase 07)
-The recommendation implementation follows the PRD's enforced boundary: UI rail → `useRecommendations` hook → `recommendationService` → `RecommendationProvider` contract → `MockRecommendationProvider` → pure mock engine. React components never implement scoring or candidate filtering. The provider can be replaced later without changing the UI or hook contract.
+The recommendation implementation follows the PRD's enforced boundary: UI rail → `useRecommendations` hook → `recommendationService` → `RecommendationProvider` contract → `MockRecommendationProvider` → pure mock engine. React components never implement scoring or candidate filtering. The provider can be replaced later without changing the UI or hook contract. Other strategies (category, price, wishlist, cart and recently viewed) use the same typed generic service function.
 
 ### Signal assembly and persistence
 - `features/recommendations/store/recently-viewed-store.ts` records every distinct PDP visit, newest first, with product snapshots in local storage; the homepage and header show previews while the dashboard exposes the full history.
