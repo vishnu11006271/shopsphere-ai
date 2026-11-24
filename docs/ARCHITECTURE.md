@@ -71,25 +71,25 @@ DummyJSON product prices are source values, not INR-denominated prices. The curr
 
 
 ## Recommendation engine (Phase 07)
-The recommendation implementation follows the PRD's enforced boundary: UI rail → \`useRecommendations\` hook → \`recommendationService\` → \`RecommendationProvider\` contract → \`MockRecommendationProvider\` → pure mock engine. React components never implement scoring or candidate filtering. The provider can be replaced later without changing the UI or hook contract.
+The recommendation implementation follows the PRD's enforced boundary: UI rail → `useRecommendations` hook → `recommendationService` → `RecommendationProvider` contract → `MockRecommendationProvider` → pure mock engine. React components never implement scoring or candidate filtering. The provider can be replaced later without changing the UI or hook contract.
 
 ### Signal assembly and persistence
-- \`features/recommendations/store/recently-viewed-store.ts\` records every distinct PDP visit, newest first, with product snapshots in local storage; the homepage and header show previews while the dashboard exposes the full history.
+- `features/recommendations/store/recently-viewed-store.ts` records every distinct PDP visit, newest first, with product snapshots in local storage; the homepage and header show previews while the dashboard exposes the full history.
 - The hook assembles recently viewed products, recent search queries, category context, wishlist products, cart lines, and product snapshots resolved from the customer's local order history. Live catalogue data is read through the existing TanStack Query product cache.
 - The engine derives the observed price band from recently viewed and carted products; brand affinity is derived from browsing frequency. Previous simulated purchases remain eligible for repeat/replenishment suggestions. Search text is matched against product title, brand, category and tags. Product category, tags and rating come from the catalogue.
-- \`recommendation-preferences-store.ts\` lets a customer enable or disable each of the ten signal families shown in the dashboard. Resetting personalization clears recently viewed and search history and restores the default signal toggles; it intentionally does not delete cart, wishlist, or order data.
-- \`recommendation-analytics-store.ts\` records local rail impressions, product clicks, and add-to-cart actions keyed by strategy and product ID. This is browser-local demo analytics, not an external analytics service.
+- `recommendation-preferences-store.ts` lets a customer enable or disable each of the ten signal families shown in the dashboard. Resetting personalization clears recently viewed and search history and restores the default signal toggles; it intentionally does not delete cart, wishlist, or order data.
+- `recommendation-analytics-store.ts` records local rail impressions, product clicks, and add-to-cart actions keyed by strategy and product ID. This is browser-local demo analytics, not an external analytics service.
 
 ### Nine strategies and placements
 1. Recently Viewed — stored PDP history in most-recent-first order; homepage and header dropdown.
 2. Similar Products — current PDP anchor, category, Jaccard tag overlap and price similarity; PDP.
 3. Category-Based — current or dominant category interest; homepage, category discovery and PDP.
-4. Price-Based — candidates ranked against the min/max price band inferred from viewed, saved, carted and purchased products; homepage and search results.
+4. Price-Based — candidates ranked against the min/max price band inferred from recently viewed and carted products; homepage and search results.
 5. Wishlist-Based — candidate similarity to saved products; wishlist page and homepage.
 6. Cart-Based — candidate similarity to active cart products; cart page and checkout order summary.
 7. Frequently Bought Together — deterministic category co-purchase fixture plus observed category co-occurrence in local order history; PDP. It does not invent a generic bundle when no association exists.
-8. Trending Products — explicit mock product popularity, category popularity and rating-velocity values from \`public/mock-data/recommendation-signals.json\`; homepage.
-9. Personalized For You — weighted blend of the available category, price, tags, rating, recently-viewed, wishlist and cart signals; homepage, customer dashboard and PDP. With no meaningful history, it falls back to the trending ranking.
+8. Trending Products — explicit mock product popularity, category popularity and rating-velocity values from `public/mock-data/recommendation-signals.json`; homepage.
+9. Personalized For You — weighted blend of the available category, price, tags, rating, recently-viewed, wishlist, cart, previous-purchase and brand signals; homepage, customer dashboard and PDP. With no meaningful history, it falls back to the trending ranking.
 
 ### Auditable weighted scoring
 Each of the seven PRD scoring components is normalized to 0–1. The chosen implementation weights, including an additional repeat-purchase term, sum to 1.00:
@@ -108,7 +108,7 @@ The composite is the sum of the seven PRD-required component × weight terms plu
 
 ### Failure behavior and transparency
 - A recommendation query failure attempts the Trending strategy as a graceful fallback; if both the service and cached catalogue are unavailable, the rail hides instead of rendering an empty/broken container.
-- A first-time visitor sees Featured and Trending products. Recently Viewed and Personalized rails are hidden until meaningful signals exist.
+- On the homepage, a first-time visitor sees Featured and Trending products. Recently Viewed and Personalized rails are hidden until meaningful signals exist.
 - Recommendation cards show a reason label, are clickable to the PDP, and record local impression/click/add-to-cart events.
 - The dashboard's Recommendation Preferences panel lists the signals, observed history/price range and toggles. A customer can reset browsing/search personalization without losing commerce data.
 - Mock popularity, rating-velocity and category co-purchase data are deterministic local fixtures. They are not claimed as real sales or popularity analytics, and no paid API or LLM is used.
