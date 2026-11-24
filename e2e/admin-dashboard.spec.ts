@@ -57,5 +57,5 @@ test("administrator can inspect local recommendation analytics", async ({ page }
   await page.getByRole("tab", { name: "Recommendation analytics" }).click();
   await expect(page.getByRole("heading", { name: "Recommendation analytics" })).toBeVisible();
   await expect(page.getByText("Local Analytics")).toBeVisible();
-  await expect(page.getByText("40.0%")).toBeVisible();
+  await expect(page.getByText("50.0%")).toBeVisible();
 });

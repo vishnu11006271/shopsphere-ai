@@ -49,5 +49,6 @@ test("review form enforces the minimum written-review length", async ({ page }) 
   await page.goto("/products/1");
   await page.getByLabel("Review title").fill("Short review");
   await page.getByLabel("Your review").fill("Too short");
-  await expect(page.getByRole("button", { name: "Submit review" })).toBeDisabled();
+  await page.getByRole("button", { name: "Submit review" }).click();
+  await expect(page.getByText("No reviews yet")).toBeVisible();
 });
