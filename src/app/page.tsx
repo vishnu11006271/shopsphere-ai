@@ -42,6 +42,7 @@ export default function HomePage() {
       <RecommendationRail strategy="trending" title="Trending Products" note="Popular items ranked from deterministic mock popularity and rating-velocity signals."/>
       <RecommendationRail strategy="recently-viewed" title={recentlyViewedTitle ? "Because You Viewed " + recentlyViewedTitle : "Recently Viewed"} note="Your latest product views, in most-recent-first order." enabled={hasViewed}/>
       <RecommendationRail strategy="wishlist-based" title="Because of Your Wishlist" note="Products related to items you have saved." enabled={hasWishlist}/>
+      <RecommendationRail strategy="category-based" title="Picked by Category" note="Products from the category you have shown the strongest interest in." enabled={hasPersonalizationSignals}/>
       <RecommendationRail strategy="personalized" title="Recommended For You" note="A weighted blend of your available browsing and shopping signals." enabled={hasPersonalizationSignals}/>
       <RecommendationRail strategy="price-based" title="Within Your Price Range" note="Products near the price range inferred from your browsing and shopping activity." enabled={hasPersonalizationSignals}/>
     </div>
