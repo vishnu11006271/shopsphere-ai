@@ -16,22 +16,11 @@ import { formatINR } from "@/lib/utils";
 import type { Product } from "@/types/product";
 import { RecommendationRail } from "@/features/recommendations/components/recommendation-rail";
 import { useRecentlyViewedStore } from "@/features/recommendations/store/recently-viewed-store";
+import { ProductReviews } from "@/features/reviews/components/product-reviews";
 
 type Tab = "description" | "specifications";
 
-function ReviewSection({ product }: { product: Product }) {
-  const reviews = product.reviews ?? [];
-  return <section className="mt-14 border-t border-black/5 pt-10" id="reviews">
-    <div className="flex flex-wrap items-center justify-between gap-4">
-      <div><h2 className="text-xl font-bold">Customer reviews</h2><p className="mt-1 text-sm text-muted">Ratings and comments supplied with the product catalogue.</p></div>
-      <div className="flex items-center gap-2 rounded-2xl bg-white px-4 py-3 shadow-soft"><Star className="fill-accent text-accent" size={20}/><span className="text-2xl font-bold">{product.rating.toFixed(1)}</span><span className="text-xs text-muted">/ 5</span></div>
-    </div>
-    {reviews.length ? <div className="mt-6 grid gap-3 md:grid-cols-2">{reviews.map((review, index) => <article key={`${review.reviewerName}-${index}`} className="rounded-2xl bg-white p-5 shadow-soft">
-      <div className="flex items-center justify-between gap-3"><p className="text-sm font-semibold">{review.reviewerName}</p><span className="flex items-center gap-1 text-xs text-muted"><Star size={12} className="fill-accent text-accent"/>{review.rating}/5</span></div>
-      <p className="mt-3 text-sm leading-6 text-muted">{review.comment}</p><p className="mt-3 text-[11px] text-muted">{new Date(review.date).toLocaleDateString()}</p>
-    </article>)}</div> : <div className="mt-6 rounded-2xl border border-dashed border-black/15 bg-white/60 p-6 text-sm text-muted">No written reviews are available from the catalogue for this product yet.</div>}
-  </section>;
-}
+
 
 export function ProductDetailPage({ productId }: { productId: number }) {
   const router = useRouter();
@@ -105,7 +94,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
         </div>
       </section>
     </div>
-    <ReviewSection product={product}/>
+    <ProductReviews product={product}/>
     <RecommendationRail strategy="similar-products" title="Similar Products" note="Ranked by category, shared tags, price similarity and product rating." currentProduct={product}/>
     <RecommendationRail strategy="category-based" title="Related Products" note={"Category-based suggestions for " + product.category + "."} category={product.category} currentProduct={product}/>
     <RecommendationRail strategy="frequently-bought-together" title="Frequently Bought Together" note="Uses local co-purchase category fixtures and your own order/cart context." currentProduct={product}/>
