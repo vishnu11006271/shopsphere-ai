@@ -42,7 +42,7 @@ export default function LoginPage() {
           {error && <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
           <Button type="submit" className="w-full" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</Button>
         </form><p className="mt-6 text-sm text-muted">New to ShopSphere? <Link href="/register" className="font-semibold text-brand hover:underline">Create an account</Link></p>
-          <p className="mt-8 text-xs leading-5 text-muted">Development authentication only. Do not reuse a real password or enter sensitive information.</p>
+          <p className="mt-8 text-xs leading-5 text-muted">Development authentication only. Do not reuse a real password or enter sensitive information. If you were redirected here during checkout, your progress is saved locally and will resume after sign-in.</p>
         </section>
       </div>
     </div>
