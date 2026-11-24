@@ -46,7 +46,7 @@ Install the Playwright browser once with npx playwright install chromium.
 - Checkout is a simulation only; never enter real payment information. Mock Card and Mock UPI never request card numbers, CVV, bank credentials, or UPI PINs. Test success/decline outcomes are local UI state only.
 - Checkout progress and orders are persisted in browser local storage. Session expiry redirects to sign-in and returns to the saved checkout step after re-authentication; this is not server-side transactional storage.
 - Shipping, tax, and coupon behavior in the cart are deterministic local simulations.
-- Assistant and recommendation engine are rule-based/local; no paid LLM or recommendation API is used. The assistant is explicitly described as rule-based in its UI and technical documentation.
+- Assistant and recommendation engine are rule-based/local; no paid LLM or recommendation API is used. The assistant is explicitly described as rule-based in its UI and technical documentation. Chat history and refinement context remain in browser memory for the current session and are not synced to an account.
 - Admin writes and analytics are local/simulated and will be labeled as such.
 - DummyJSON prices are not INR. The displayed conversion is illustrative only, not a live exchange rate.
 - Do not commit .env.local, credentials, or secrets.
