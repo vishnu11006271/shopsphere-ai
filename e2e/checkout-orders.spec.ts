@@ -21,8 +21,7 @@ test("customer can resume checkout after refresh, place a mock order, and track 
   await page.getByLabel("City").fill("Bengaluru");
   await page.getByLabel("State").fill("Karnataka");
   await page.getByLabel("PIN code").fill("560038");
-  await page.reload();
-  await expect(page.getByLabel("Street address")).toHaveValue("12 MG Road, Indiranagar");
+  await page.evaluate(() => {\n    const raw = localStorage.getItem("shopsphere-auth");\n    if (!raw) throw new Error("Expected a persisted demo session.");\n    const persisted = JSON.parse(raw);\n    persisted.state.session.expiresAt = Date.now() - 1;\n    localStorage.setItem("shopsphere-auth", JSON.stringify(persisted));\n  });\n  await page.reload();\n  await expect(page).toHaveURL(/\\/login\\?next=%2Fcheckout/);\n  await page.getByLabel("Email address").fill("customer@shopsphere.demo");\n  await page.getByLabel("Password").fill("Customer@123");\n  await page.getByRole("button", { name: "Sign in" }).click();\n  await expect(page).toHaveURL(/\\/checkout$/);\n  await expect(page.getByLabel("Street address")).toHaveValue("12 MG Road, Indiranagar");
   await page.getByRole("button", { name: /Continue/ }).click();
 
   await expect(page.getByRole("heading", { name: "Delivery method" })).toBeVisible();
