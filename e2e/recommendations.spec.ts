@@ -3,6 +3,7 @@ import { test, expect } from "@playwright/test";
 test("customer can inspect and control recommendation preferences", async ({ page }) => {
   await page.goto("/products/1");
   await expect(page.getByRole("heading", { name: /customer reviews/i })).toBeVisible();
+  await expect.poll(() => page.evaluate(() => Boolean(localStorage.getItem("shopsphere-recently-viewed")))).toBe(true);
   await page.goto("/login");
   await page.getByLabel("Email address").fill("customer@shopsphere.demo");
   await page.getByLabel("Password").fill("Customer@123");
