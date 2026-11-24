@@ -34,7 +34,7 @@ Install the Playwright browser once with `npx playwright install chromium`.
 - Phase 02: local/JWT-compatible development authentication.
 - Phase 03: product discovery, filters, sorting, URL-synced search, wishlist toggles, quick view, and comparison.
 - Phase 04: product detail route, gallery/lightbox, optional variants, stock-aware quantity, cart/Buy Now, description/specification tabs, and simulated delivery estimator.
-- Phase 05: persistent cart and wishlist, stock and catalogue validation, price-change confirmation, coupons, simulated totals, save-for-later, move-to-wishlist/cart, and signal-transparent recommendation previews.
+- Phase 05: persistent cart and wishlist, stock and catalogue validation, price-change confirmation, coupons, simulated totals, save-for-later, move-to-wishlist/cart, and initial cart/wishlist recommendation previews (replaced by the full Phase 07 engine).
 - Phase 06: six-step simulated checkout, local order creation/history, and an interactive delivery tracking timeline.
 - Phase 07: layered rule-based recommendation engine with all nine strategies, weighted scoring, transparent signal reasons, local preference controls, and local engagement analytics.\n- Remaining: conversational assistant, admin operations, and review submission workflows.
 
