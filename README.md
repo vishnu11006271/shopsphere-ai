@@ -35,7 +35,8 @@ Install the Playwright browser once with `npx playwright install chromium`.
 - Phase 03: product discovery, filters, sorting, URL-synced search, wishlist toggles, quick view, and comparison.
 - Phase 04: product detail route, gallery/lightbox, optional variants, stock-aware quantity, cart/Buy Now, description/specification tabs, simulated delivery estimator, review display, and clearly labeled recommendation rail previews.
 - Phase 05: persistent cart and wishlist, stock and catalogue validation, price-change confirmation, coupons, simulated totals, save-for-later, move-to-wishlist/cart, and signal-transparent recommendation previews.
-- Remaining: simulated checkout and order lifecycle, nine recommendation strategies, conversational assistant, admin operations, and review submission workflows.
+- Phase 06: six-step simulated checkout, local order creation/history, and an interactive delivery tracking timeline.
+- Remaining: nine recommendation strategies, conversational assistant, admin operations, and review submission workflows.
 
 ## Scope and safety
 - Checkout is a simulation only; never enter real payment information. Mock Card and Mock UPI never request card numbers, CVV, bank credentials, or UPI PINs. Test success/decline outcomes are local UI state only.\n- Checkout progress and orders are persisted in browser local storage. Session expiry redirects to sign-in and returns to the saved checkout step after re-authentication; this is not server-side transactional storage.
