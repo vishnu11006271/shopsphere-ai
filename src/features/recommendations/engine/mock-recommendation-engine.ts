@@ -71,7 +71,7 @@ function relation(candidate:Product,sources:Product[]):number {
 }
 function brandAffinity(product:Product,signals:RecommendationSignals):number {
   if(!active(signals,"brandPreference")||!product.brand)return 0;
-  const brands=sourceProducts(signals).map((item)=>item.brand).filter((brand):brand is string=>Boolean(brand));
+  const brands=(active(signals,"recentlyViewed")?signals.recentlyViewed:[]).map((item)=>item.brand).filter((brand):brand is string=>Boolean(brand));
   if(!brands.length)return 0;
   return clamp01(brands.filter((brand)=>normalize(brand)===normalize(product.brand??"")).length/brands.length);
 }
