@@ -8,6 +8,7 @@ test("customer can inspect and control recommendation preferences", async ({ pag
   await expect(page).toHaveURL(/\/account$/);
   await page.goto("/account#recommendation-preferences");
   await expect(page.getByRole("heading", { name: "Recommendation Preferences" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Recommended For You" })).toBeVisible();
   const ratingSignal=page.getByLabel("Use Product ratings");
   await expect(ratingSignal).toBeChecked();
   await ratingSignal.uncheck();
