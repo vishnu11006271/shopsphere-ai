@@ -30,28 +30,36 @@ export function useRecommendations(options: {
   const enabledSignals=useRecommendationPreferencesStore((state)=>state.enabledSignals);
   const cartProducts=useMemo(()=>cartLines.map((line)=>line.product),[cartLines]);
   const purchaseIds=useMemo(()=>orders.flatMap((order)=>order.items.map((item)=>item.productId)),[orders]);
-  const querySignature=useMemo(()=>JSON.stringify({
-    viewed:recentlyViewed.map((item)=>item.id),searchQueries,wishlistIds,cart:cartProducts.map((item)=>item.id),
-    purchases:purchaseIds,enabledSignals,category:options.category,current:options.currentProduct?.id,
-  }),[recentlyViewed,searchQueries,wishlistIds,cartProducts,purchaseIds,enabledSignals,options.category,options.currentProduct?.id]);
+  const context={
+    recentlyViewed,searchQueries,wishlistIds,wishlistSnapshots,cart:cartProducts,
+    purchaseIds,currentCategory:options.category,enabledSignals,
+  };
+  const queryKey=recommendationService.queryKey({
+    strategy:options.strategy,context,currentProductId:options.currentProduct?.id,
+    category:options.category,limit:options.limit,
+  });
   return useQuery({
-    queryKey:["recommendations",options.strategy,querySignature,options.limit??8],
+    queryKey,
     enabled:options.enabled!==false,
-    staleTime:30_000,
+    staleTime:recommendationService.cache.recommendationStaleTimeMs,
     queryFn:async()=>{
       const needsCatalogue=options.strategy!=="recently-viewed";
       const catalogue=needsCatalogue
-        ? await queryClient.fetchQuery({queryKey:productKeys.catalogue,queryFn:({signal:catalogueSignal})=>productService.getAll(catalogueSignal),staleTime:120_000})
+        ? await queryClient.fetchQuery({
+            queryKey:productKeys.catalogue,
+            queryFn:({signal})=>productService.getAll(signal),
+            staleTime:recommendationService.cache.productCatalogueStaleTimeMs,
+          })
         : {products:recentlyViewed};
-      return recommendationService.recommend({
-        strategy:options.strategy,
-        products:catalogue.products,
-        context:{
-          recentlyViewed,searchQueries,wishlistIds,wishlistSnapshots,cart:cartProducts,
-          purchaseIds,currentCategory:options.category,enabledSignals,
-        },
-        currentProduct:options.currentProduct,category:options.category,limit:options.limit,
-      });
+      const request={
+        products:catalogue.products,context,currentProduct:options.currentProduct,
+        category:options.category,limit:options.limit,
+      };
+      if(options.strategy==="personalized")return recommendationService.getPersonalized(request);
+      if(options.strategy==="similar-products")return recommendationService.getSimilar(request);
+      if(options.strategy==="trending")return recommendationService.getTrending(request);
+      if(options.strategy==="frequently-bought-together")return recommendationService.getFrequentlyBought(request);
+      return recommendationService.recommend({...request,strategy:options.strategy});
     },
   });
 }
