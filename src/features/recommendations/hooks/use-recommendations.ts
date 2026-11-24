@@ -37,7 +37,7 @@ export function useRecommendations(options: {
     queryKey:["recommendations",options.strategy,querySignature,options.limit??8],
     enabled:options.enabled!==false,
     staleTime:30_000,
-    queryFn:async({signal})=>{
+    queryFn:async()=>{
       const needsCatalogue=options.strategy!=="recently-viewed";
       const catalogue=needsCatalogue
         ? await queryClient.fetchQuery({queryKey:productKeys.catalogue,queryFn:({signal:catalogueSignal})=>productService.getAll(catalogueSignal),staleTime:120_000})
