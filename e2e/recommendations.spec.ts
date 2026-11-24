@@ -5,7 +5,7 @@ test("customer can inspect and control recommendation preferences", async ({ pag
   await page.getByLabel("Email address").fill("customer@shopsphere.demo");
   await page.getByLabel("Password").fill("Customer@123");
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/account$/);
   await page.goto("/account#recommendation-preferences");
   await expect(page.getByRole("heading", { name: "Recommendation Preferences" })).toBeVisible();
   const ratingSignal=page.getByLabel("Use Product ratings");
