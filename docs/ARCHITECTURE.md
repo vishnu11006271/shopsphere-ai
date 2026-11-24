@@ -95,13 +95,14 @@ The recommendation implementation follows the PRD's enforced boundary: UI rail �
 Each of the seven PRD scoring components is normalized to 0–1. The chosen implementation weights, including an additional repeat-purchase term, sum to 1.00:
 | Component | Weight |
 |---|---:|
-| Category match | 0.20 |
-| Price similarity | 0.14 |
-| Tag overlap (Jaccard) | 0.18 |
-| Normalized product rating | 0.10 |
-| Recently viewed relation | 0.14 |
-| Wishlist relation | 0.12 |
-| Cart relation | 0.11 |\n| Previous-purchase relation | 0.09 |
+| Category match | 0.18 |
+| Price similarity | 0.13 |
+| Tag overlap (Jaccard) | 0.16 |
+| Normalized product rating | 0.09 |
+| Recently viewed relation | 0.13 |
+| Wishlist relation | 0.11 |
+| Cart relation | 0.11 |
+| Previous-purchase relation | 0.09 |
 
 The composite is the sum of the seven PRD-required component × weight terms plus a previous-purchase relation term (0.09), then a small brand-affinity bonus (up to 0.05) is added and the result is clamped to 0–1. Similarity between a candidate and a signal product is 40% category match, 40% tag Jaccard overlap and 20% price similarity. Price similarity is 1.0 inside the observed min/max band and decays linearly outside it; for a PDP anchor it decays with relative price distance. Rating is product rating divided by five. Ties are resolved deterministically by rating and product ID. These weights are implementation choices permitted by PRD Section 6.2 and are intentionally documented for review.
 
