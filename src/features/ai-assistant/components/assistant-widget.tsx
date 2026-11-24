@@ -29,7 +29,7 @@ const STARTER_PROMPTS = [
 
 function InlineProduct({ product }: { product: Product }) {
   const addItem = useCartStore((state) => state.addItem);
-  return <article className="flex min-w-0 gap-3 rounded-2xl border border-black/5 bg-white p-2.5">
+  return <article data-testid="assistant-product-card" className="flex min-w-0 gap-3 rounded-2xl border border-black/5 bg-white p-2.5">
     <Link href={"/products/" + product.id} className="relative size-[76px] shrink-0 overflow-hidden rounded-xl bg-[#f0f1eb]" aria-label={"View " + product.title}>
       <Image src={product.thumbnail} alt="" fill sizes="76px" className="object-contain p-2"/>
     </Link>
@@ -104,7 +104,7 @@ export function AssistantWidget() {
   };
 
   return <>
-    {open && <section aria-label="ShopSphere shopping assistant" className="fixed bottom-24 right-4 z-50 flex h-[min(760px,calc(100dvh-7rem))] w-[min(440px,calc(100vw-2rem))] flex-col overflow-hidden rounded-[1.75rem] border border-black/10 bg-[#f8f9f5] shadow-2xl max-sm:inset-0 max-sm:bottom-0 max-sm:right-0 max-sm:h-[100dvh] max-sm:w-full max-sm:rounded-none">
+    {open && <section data-testid="assistant-panel" aria-label="ShopSphere shopping assistant" className="fixed bottom-24 right-4 z-50 flex h-[min(760px,calc(100dvh-7rem))] w-[min(440px,calc(100vw-2rem))] flex-col overflow-hidden rounded-[1.75rem] border border-black/10 bg-[#f8f9f5] shadow-2xl max-sm:inset-0 max-sm:bottom-0 max-sm:right-0 max-sm:h-[100dvh] max-sm:w-full max-sm:rounded-none">
       <header className="flex items-center justify-between bg-[#173f31] px-5 py-4 text-white">
         <div className="flex items-center gap-3">
           <span className="grid size-10 place-items-center rounded-2xl bg-white/10"><Sparkles size={19}/></span>
@@ -130,7 +130,7 @@ export function AssistantWidget() {
         {isPending && <div className="flex items-center gap-2 rounded-2xl bg-white p-4 text-xs text-muted"><LoaderCircle size={16} className="animate-spin"/> Loading the product catalogue…</div>}
         {isError && <div role="alert" className="rounded-2xl bg-white p-4 text-xs text-rose-700"><p>We couldn’t load products for the assistant.</p><button type="button" onClick={() => void refetch()} className="mt-2 font-semibold underline">Try again</button></div>}
 
-        {messages.map((message) => <div key={message.id} className={message.role === "user" ? "ml-8" : "mr-3"}>
+        {messages.map((message) => <div key={message.id} data-testid={message.role === "assistant" ? "assistant-message" : "user-message"} className={message.role === "user" ? "ml-8" : "mr-3"}>
           <div className={message.role === "user" ? "ml-auto max-w-[90%] rounded-2xl rounded-br-md bg-[#173f31] px-4 py-3 text-xs leading-5 text-white" : "rounded-2xl rounded-bl-md bg-white px-4 py-3 text-xs leading-5 text-ink shadow-sm"}>
             {message.role === "assistant" && <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-brand">ShopSphere</p>}
             {message.text}
