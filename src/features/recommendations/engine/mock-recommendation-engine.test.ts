@@ -66,6 +66,11 @@ describe("recommendation engine",()=>{
     const results=run("frequently-bought-together",{recentlyViewed:[],wishlist:[],cart:[viewed],purchases:[]});
     expect(results[0].product.category).toBe("mobile-accessories");
   });
+  it("does not invent a bundle when no co-purchase association exists",()=>{
+    const unrelated=product(200,"motorcycle",["engine","vehicle"],900);
+    const results=run("frequently-bought-together",{recentlyViewed:[],wishlist:[],cart:[unrelated],purchases:[]});
+    expect(results).toEqual([]);
+  });
   it("ranks trending products from explicit popularity and rating-velocity fixtures",()=>{
     const results=run("trending",{recentlyViewed:[],wishlist:[],cart:[],purchases:[],searchQueries:[]});
     expect(results[0].product.id).toBe(1);
