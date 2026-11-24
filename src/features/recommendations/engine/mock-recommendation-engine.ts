@@ -144,7 +144,7 @@ function frequentlyBought(request:RecommendationRequest):RecommendedProduct[] {
 }
 function personalized(request:RecommendationRequest):RecommendedProduct[] {
   const sources=sourceProducts(request.signals);
-  const hasSearch=active(request.signals,"searchHistory")&&request.signals.searchQueries.some((query)=>request.products.some((product)=>searchRelevance(product,request.signals)>0));
+  const hasSearch=active(request.signals,"searchHistory")&&request.products.some((product)=>searchRelevance(product,request.signals)>0);
   const items=ranked(request.products.filter((product)=>!sources.some((item)=>item.id===product.id)),"personalized",request.signals,request.currentProduct,request.limit??8);
   if(items.length&&(sources.length||hasSearch))return items;
   return trending(request).map((item)=>({...item,strategy:"personalized",reasons:[{label:"Popular fallback",detail:"Signals are limited, so popular products provide a useful starting point"}]}));
