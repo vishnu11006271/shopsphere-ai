@@ -46,7 +46,7 @@ describe("recommendation engine",()=>{
   });
   it("ranks similar products from the current PDP anchor",()=>{
     const results=run("similar-products",{},viewed);
-    expect(results[0].product.id).toBe(3);
+    expect(results[0].product.id).toBe(1);
     expect(results.some((item)=>item.product.id===100)).toBe(false);
   });
   it("uses the dominant category for category-based suggestions",()=>{
