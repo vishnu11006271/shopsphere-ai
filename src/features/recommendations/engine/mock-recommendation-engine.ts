@@ -29,10 +29,6 @@ function dominantCategory(signals: RecommendationSignals,fallback?:string):strin
   const counts=new Map<string,number>();sourceCategories(signals).forEach((category)=>counts.set(category,(counts.get(category)??0)+1));
   return [...counts.entries()].sort((a,b)=>b[1]-a[1])[0]?.[0]??"";
 }
-function typicalPrice(signals:RecommendationSignals):number|null {
-  const prices=sourceProducts(signals).map((product)=>product.price).filter((price)=>Number.isFinite(price)&&price>0);
-  return prices.length?prices.reduce((sum,value)=>sum+value,0)/prices.length:null;
-}
 function searchRelevance(product:Product,signals:RecommendationSignals):number {
   if(!active(signals,"searchHistory")||!signals.searchQueries.length)return 0;
   const fields=[product.title,product.brand??"",product.category,...(product.tags??[])].map(normalize).filter(Boolean);
@@ -117,10 +113,10 @@ function categoryBased(request:RecommendationRequest):RecommendedProduct[] {
     .map((item)=>({...item,reasons:[{label:"Category match",detail:"Based on your interest in "+category.replaceAll("-"," ")},...item.reasons.filter((reason)=>reason.label!=="Category interest")]}));
 }
 function priceBased(request:RecommendationRequest):RecommendedProduct[] {
-  const target=typicalPrice(request.signals);if(target===null)return [];
+  const range=getRecommendationPriceRange(request.signals);if(!range)return [];
   const excluded=new Set(sourceProducts(request.signals).map((product)=>product.id));
   return request.products.filter((product)=>product.stock>0&&product.id!==request.currentProduct?.id&&!excluded.has(product.id))
-    .map((product)=>({product,strategy:"price-based" as const,score:clamp01(1-Math.abs(product.price-target)/Math.max(target,1)),reasons:[{label:"Typical price range",detail:"Your observed average catalogue price is "+target.toFixed(2)}]}))
+    .map((product)=>({product,strategy:"price-based" as const,score:priceSimilarity(product,request.signals),reasons:[{label:"Typical price range",detail:"Compared with your observed catalogue price band"}]}))
     .sort((a,b)=>b.score-a.score||b.product.rating-a.product.rating).slice(0,request.limit??8);
 }
 function trending(request:RecommendationRequest):RecommendedProduct[] {
