@@ -3,7 +3,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Activity, AlertTriangle, ArrowUpRight, BarChart3, Boxes, ChevronRight, CircleDollarSign, ClipboardList, Eye, EyeOff, LayoutDashboard, Package, Pencil, Plus, Search, ShieldCheck, ShoppingBag, Star, Trash2, Users, type LucideIcon } from "lucide-react";
+import { Activity, AlertTriangle, ArrowUpRight, BarChart3, Boxes, ChevronRight, CircleDollarSign, ClipboardList, Eye, EyeOff, LayoutDashboard, MessageSquare, Package, Pencil, Plus, Search, ShieldCheck, ShoppingBag, Star, Trash2, Users, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { productKeys, productService } from "@/features/products/services/product-service";
 import { useAdminCatalogStore } from "../store/admin-catalog-store";

@@ -41,8 +41,8 @@ export function ProductReviews({ product }: { product: Product }) {
   const orders = useCheckoutStore((state) => state.orders);
   const allReviews = useReviewStore((state) => state.reviews);
   const addReview = useReviewStore((state) => state.addReview);
-  const reviews = useMemo(() => sortReviews(allReviews.filter((review) => review.productId === product.id && review.status === "PUBLISHED"), sort), [allReviews, product.id]);
   const [sort, setSort] = useState<"recent" | "highest" | "lowest" | "helpful">("recent");
+  const reviews = useMemo(() => sortReviews(allReviews.filter((review) => review.productId === product.id && review.status === "PUBLISHED"), sort), [allReviews, product.id, sort]);
   const [rating, setRating] = useState(5);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
