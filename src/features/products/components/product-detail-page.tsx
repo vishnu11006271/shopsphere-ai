@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ChevronLeft, ChevronRight, Heart, Info, Minus, PackageCheck, Plus, ShieldCheck, ShoppingBag, Star, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CommerceLinks } from "@/features/cart/components/commerce-links";
 import { useCartStore } from "@/store/cart-store";
 import { useWishlistStore } from "@/features/wishlist/store/wishlist-store";
 import { productKeys, productService } from "@/features/products/services/product-service";
@@ -58,6 +59,8 @@ export function ProductDetailPage({ productId }: { productId: number }) {
   const { data: catalogueData } = useQuery({ queryKey: productKeys.catalogue, queryFn: ({ signal }) => productService.getAll(signal), enabled: Boolean(product) });
   const { data: featuredData } = useQuery({ queryKey: productKeys.featured, queryFn: ({ signal }) => productService.getFeatured(signal), enabled: Boolean(product) });
   const addItem = useCartStore((state) => state.addItem);
+  const cartCount = useCartStore((state) => state.items.reduce((sum, item) => sum + item.quantity, 0));
+  const wishlistCount = useWishlistStore((state) => state.productIds.length);
   const saved = useWishlistStore((state) => state.productIds.includes(productId));
   const toggleWishlist = useWishlistStore((state) => state.toggle);
   const [activeImage, setActiveImage] = useState(0);
@@ -87,7 +90,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
   const currentImage = images[activeImage] ?? product.thumbnail;
 
   return <main className="mx-auto max-w-7xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
-    <Link href="/products" className="inline-flex items-center gap-2 text-sm font-medium text-muted transition hover:text-brand"><ArrowLeft size={16}/> Back to products</Link>
+    <div className="flex flex-wrap items-center justify-between gap-3"><Link href="/products" className="inline-flex items-center gap-2 text-sm font-medium text-muted transition hover:text-brand"><ArrowLeft size={16}/> Back to products</Link><CommerceLinks cartCount={cartCount} wishlistCount={wishlistCount}/></div>
     <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,.95fr)] lg:gap-12">
       <section className="min-w-0">
         <div className="relative aspect-square overflow-hidden rounded-[2rem] bg-white shadow-soft">
@@ -98,7 +101,7 @@ export function ProductDetailPage({ productId }: { productId: number }) {
         {images.length > 1 && <div className="mt-3 grid grid-cols-5 gap-2 sm:grid-cols-6">{images.slice(0,6).map((src,index)=><button key={src} type="button" onClick={()=>setActiveImage(index)} aria-label={`View product image ${index+1}`} aria-pressed={activeImage===index} className={`relative aspect-square overflow-hidden rounded-xl bg-white ${activeImage===index?"ring-2 ring-brand ring-offset-2":"opacity-70 hover:opacity-100"}`}><Image src={src} alt="" fill sizes="100px" className="object-contain p-2"/></button>)}</div>}
       </section>
       <section className="lg:pt-2">
-        <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[.18em] text-brand">{product.brand || "ShopSphere selection"}</p><h1 className="mt-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">{product.title}</h1></div><button type="button" onClick={()=>toggleWishlist(product.id)} aria-label={saved?"Remove from wishlist":"Add to wishlist"} aria-pressed={saved} className="shrink-0 rounded-full bg-white p-3 text-ink shadow-soft hover:text-rose-600"><Heart className={saved?"fill-rose-500 text-rose-500":""}/></button></div>
+        <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[.18em] text-brand">{product.brand || "ShopSphere selection"}</p><h1 className="mt-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">{product.title}</h1></div><button type="button" onClick={()=>toggleWishlist(product.id, product)} aria-label={saved?"Remove from wishlist":"Add to wishlist"} aria-pressed={saved} className="shrink-0 rounded-full bg-white p-3 text-ink shadow-soft hover:text-rose-600"><Heart className={saved?"fill-rose-500 text-rose-500":""}/></button></div>
         <div className="mt-4 flex flex-wrap items-center gap-3 text-sm"><span className="flex items-center gap-1 font-semibold"><Star size={16} className="fill-accent text-accent"/>{product.rating.toFixed(1)}</span><a href="#reviews" className="text-muted underline-offset-4 hover:underline">{product.reviews?.length ?? 0} catalogue reviews</a><span className="text-muted">·</span><span className={availableStock>0?"text-emerald-700":"text-rose-600"}>{stockLabel}</span></div>
         <div className="mt-6 flex flex-wrap items-baseline gap-3"><span className="text-3xl font-bold">{formatINR(getDiscountedPrice(product)*85)}</span>{product.discountPercentage>0&&<><span className="text-lg text-muted line-through">{formatINR(product.price*85)}</span><span className="rounded-full bg-[#f4e7d1] px-3 py-1 text-xs font-bold text-[#8b5a13]">Save {Math.round(product.discountPercentage)}%</span></>}</div>
         <p className="mt-3 text-xs text-muted">Displayed INR amount is an illustrative conversion of the mock catalogue price, not a live exchange-rate quote.</p>

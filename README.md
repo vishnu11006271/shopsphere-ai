@@ -34,10 +34,12 @@ Install the Playwright browser once with `npx playwright install chromium`.
 - Phase 02: local/JWT-compatible development authentication.
 - Phase 03: product discovery, filters, sorting, URL-synced search, wishlist toggles, quick view, and comparison.
 - Phase 04: product detail route, gallery/lightbox, optional variants, stock-aware quantity, cart/Buy Now, description/specification tabs, simulated delivery estimator, review display, and clearly labeled recommendation rail previews.
-- Remaining: full cart/checkout/order lifecycle, nine recommendation strategies, conversational assistant, admin operations, and review submission workflows.
+- Phase 05: persistent cart and wishlist, stock and catalogue validation, price-change confirmation, coupons, simulated totals, save-for-later, move-to-wishlist/cart, and signal-transparent recommendation previews.
+- Remaining: simulated checkout and order lifecycle, nine recommendation strategies, conversational assistant, admin operations, and review submission workflows.
 
 ## Scope and safety
 - Checkout is a simulation only; never enter real payment information.
+- Shipping, tax, and coupon behavior in the cart are deterministic local simulations.
 - Assistant and recommendation engine are rule-based/local; no paid LLM API is used.
 - Admin writes and analytics are local/simulated and will be labeled as such.
 - DummyJSON prices are not INR. The displayed conversion is illustrative only, not a live exchange rate.
