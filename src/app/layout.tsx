@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AppProviders } from "@/components/providers/app-providers";
+import { AssistantWidget } from "@/features/ai-assistant/components/assistant-widget";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -8,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body><AppProviders>{children}</AppProviders></body></html>;
+  return <html lang="en"><body><AppProviders>{children}<AssistantWidget /></AppProviders></body></html>;
 }
