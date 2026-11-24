@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-const product = {
+const transparentImage = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";\nconst product = {
   id: 1, title: "Test Headphones", description: "A comfortable pair of wireless headphones.",
   category: "mens-shirts", price: 50, discountPercentage: 10, rating: 4.5, stock: 10,
-  brand: "ShopSphere", thumbnail: "https://cdn.dummyjson.com/product-images/1/thumbnail.jpg",
-  images: ["https://cdn.dummyjson.com/product-images/1/thumbnail.jpg"], tags: ["audio"], reviews: [],
+  brand: "ShopSphere", thumbnail: transparentImage,
+  images: [transparentImage], tags: ["audio"], reviews: [],
 };
 
 test("administrator can create a product in the local catalogue", async ({ page }) => {

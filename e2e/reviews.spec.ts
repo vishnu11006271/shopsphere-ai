@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
 
+const transparentImage = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 const product = {
   id: 1, title: "Test Headphones", description: "A comfortable pair of wireless headphones for everyday listening.",
   category: "mens-shirts", price: 50, discountPercentage: 10, rating: 4.5, stock: 10,
-  brand: "ShopSphere", thumbnail: "https://cdn.dummyjson.com/product-images/1/1.jpg",
-  images: ["https://cdn.dummyjson.com/product-images/1/thumbnail.jpg"], tags: ["audio"],
+  brand: "ShopSphere", thumbnail: transparentImage, images: [transparentImage], tags: ["audio"],
   reviews: [],
 };
 
@@ -16,7 +16,7 @@ async function seedCustomer(page: import("@playwright/test").Page) {
     }));
     localStorage.setItem("shopsphere-product-reviews", JSON.stringify({ state: { reviews: [] }, version: 0 }));
     localStorage.setItem("shopsphere-checkout-orders", JSON.stringify({
-      state: { draft: {}, orders: [{ id: "TEST-ORDER", customer: { name: user.name, email: user.email }, items: [{ productId: 1, title: product.title, quantity: 1 }] }] }, version: 0,
+      state: { draft: {}, orders: [{ id: "TEST-ORDER", customer: { name: user.name, email: user.email }, items: [{ productId: 1, title: "Test Headphones", quantity: 1 }] }] }, version: 0,
     }));
   });
 }
