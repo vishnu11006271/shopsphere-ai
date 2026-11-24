@@ -112,3 +112,13 @@ The composite is the sum of the seven PRD-required component × weight terms plu
 - Recommendation cards show a reason label, are clickable to the PDP, and record local impression/click/add-to-cart events.
 - The dashboard's Recommendation Preferences panel lists the signals, observed history/price range and toggles. A customer can reset browsing/search personalization without losing commerce data.
 - Mock popularity, rating-velocity and category co-purchase data are deterministic local fixtures. They are not claimed as real sales or popularity analytics, and no paid API or LLM is used.
+
+
+## AI Shopping Assistant (Phase 08)
+- The persistent AssistantWidget is mounted by the Server Component root layout and opens as a responsive docked panel on desktop or full-screen panel on mobile. Session message history and refinement context remain available while navigating between routes; refreshing starts a new chat session.
+- The widget reads the existing product catalogue through TanStack Query and the existing productService. It does not introduce a second product API implementation or a paid service.
+- intent-parser.ts is a pure TypeScript parser. It extracts category aliases/slugs, maximum and minimum displayed price, minimum rating, and supported colour refinements. Follow-up phrases such as cheaper, more expensive, better rated, and a new category are applied to the previous structured intent.
+- assistant-service.ts owns catalogue filtering and response construction. Similarity follow-ups call the existing recommendationService Similar Products strategy with the referenced earlier result as the anchor; no parallel similarity scorer is added.
+- Product cards render inside assistant messages with product detail links and Add to Cart actions. Unsupported colour options are not fabricated; the assistant only returns products when product metadata supports the requested colour.
+- Unclear messages return a clarifying response with three suggested prompts rather than unrelated products. The interface and this documentation identify the feature as a rule-based/mock assistant; no LLM, API key, or external AI service is used.
+- Assistant budget filters use the storefront's illustrative catalogue price × 85 display conversion; this is not a live INR conversion.
