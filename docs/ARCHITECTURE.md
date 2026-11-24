@@ -58,3 +58,13 @@ DummyJSON product prices are source values, not INR-denominated prices. The curr
 ## Quality and accessibility
 - Commerce pages provide loading, empty, retry, unavailable, and validation states; controls have accessible names and semantic regions.
 - Unit tests cover cart calculations/coupon validation; Playwright covers add-to-cart, wishlist, and move-to-cart flows.
+
+
+## Checkout and orders (Phase 06)
+- `features/checkout/store/checkout-store.ts` owns the locally persisted checkout draft and order history. The draft records the active step, customer details, shipping address, delivery selection, mock payment method, and deterministic test outcome.
+- `/checkout` is protected for signed-in customers and implements the PRD's six stages: Customer Information → Address → Delivery Method → Order Summary → Mock Payment → Confirmation. Customer and address fields are validated inline; the address and active step survive browser refresh.
+- When a development session expires, the existing protected-route behavior redirects the shopper to sign-in with `next=/checkout`. The draft remains in local storage and is restored after re-authentication.
+- Mock Card and Mock UPI are test-mode choices only. The UI never requests card numbers, CVV, bank credentials, or UPI PINs. A local success/decline switch exercises payment outcomes; no value is sent to a gateway. Cash on Delivery is also simulated.
+- Successful checkout creates an order snapshot from cart line items and the selected delivery option, clears the active cart, and stores the order in local storage. Order History is available at `/orders`; each `/orders/[id]` detail view displays the PRD's six-state timeline: Order Placed → Confirmed → Packed → Shipped → Out for Delivery → Delivered.
+- The tracking page exposes a clearly labeled local simulation control to advance the status and append a timestamp. This is not a real logistics integration. Order persistence is browser-local and is not shared across devices or users.
+- Delivery choices use local simulated prices and ETAs. The cart's existing coupon discount and 5% illustrative tax are carried into the order summary; the selected delivery price replaces the cart's standard shipping value.
