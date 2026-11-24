@@ -38,7 +38,7 @@ Install the Playwright browser once with `npx playwright install chromium`.
 - Remaining: simulated checkout and order lifecycle, nine recommendation strategies, conversational assistant, admin operations, and review submission workflows.
 
 ## Scope and safety
-- Checkout is a simulation only; never enter real payment information.
+- Checkout is a simulation only; never enter real payment information. Mock Card and Mock UPI never request card numbers, CVV, bank credentials, or UPI PINs. Test success/decline outcomes are local UI state only.\n- Checkout progress and orders are persisted in browser local storage. Session expiry redirects to sign-in and returns to the saved checkout step after re-authentication; this is not server-side transactional storage.
 - Shipping, tax, and coupon behavior in the cart are deterministic local simulations.
 - Assistant and recommendation engine are rule-based/local; no paid LLM API is used.
 - Admin writes and analytics are local/simulated and will be labeled as such.
