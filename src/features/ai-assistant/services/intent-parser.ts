@@ -137,12 +137,11 @@ export function extractShoppingIntent(
     return { kind: "refinement", intent, explanation: "The previous category and filters were retained and refined." };
   }
 
-  if (category || explicitMax !== undefined || explicitMin !== undefined || explicitRating !== undefined) {
+  if (explicitMax !== undefined || explicitMin !== undefined || explicitRating !== undefined) {
     return {
       kind: "search",
       intent: {
-        categorySlugs: category?.slugs ?? [],
-        ...(category ? { categoryLabel: category.label } : {}),
+        categorySlugs: [],
         ...(explicitMax !== undefined ? { maxPrice: explicitMax } : {}),
         ...(explicitMin !== undefined ? { minPrice: explicitMin } : {}),
         ...(explicitRating !== undefined ? { minRating: explicitRating, sort: "rating" } : {}),
