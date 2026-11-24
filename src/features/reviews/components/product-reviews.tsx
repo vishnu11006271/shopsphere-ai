@@ -23,8 +23,8 @@ function ReviewCard({ review, userId }: { review: ProductReviewRecord; userId?: 
     <h3 className="mt-4 text-sm font-bold">{review.title}</h3><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-muted">{review.body}</p>
     <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-black/5 pt-4">
       <span className="mr-1 text-xs text-muted">Was this helpful?</span>
-      <Button type="button" size="sm" variant={vote === "HELPFUL" ? "secondary" : "ghost"} disabled={!userId || ownReview} onClick={() => userId && voteReview(review.id, userId, "HELPFUL")}><ThumbsUp size={13}/> Helpful ({review.helpfulCount})</Button>
-      <Button type="button" size="sm" variant={vote === "NOT_HELPFUL" ? "secondary" : "ghost"} disabled={!userId || ownReview} onClick={() => userId && voteReview(review.id, userId, "NOT_HELPFUL")}><ThumbsDown size={13}/> Not helpful ({review.notHelpfulCount})</Button>
+      <Button type="button" variant={vote === "HELPFUL" ? "secondary" : "ghost"} disabled={!userId || ownReview} onClick={() => { if (userId) voteReview(review.id, userId, "HELPFUL"); }}><ThumbsUp size={13}/> Helpful ({review.helpfulCount})</Button>
+      <Button type="button" variant={vote === "NOT_HELPFUL" ? "secondary" : "ghost"} disabled={!userId || ownReview} onClick={() => { if (userId) voteReview(review.id, userId, "NOT_HELPFUL"); }}><ThumbsDown size={13}/> Not helpful ({review.notHelpfulCount})</Button>
       {ownReview && <span className="ml-auto text-[11px] text-muted">You can manage this review from your dashboard.</span>}
     </div>
   </article>;
