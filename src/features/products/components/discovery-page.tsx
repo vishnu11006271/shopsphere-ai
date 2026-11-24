@@ -76,7 +76,8 @@ function DiscoveryContent({categorySlug=""}:{categorySlug?:string}) {
     </section>
    </div>
   </div>
-  <div className="mx-auto max-w-7xl px-5 pb-14 lg:px-8"><RecommendationRail strategy="price-based" title="Within Your Price Range" note="Based on the typical price of products you have viewed, saved or added to your cart." enabled={Boolean(query)}/></div>
+  <div className="mx-auto max-w-7xl px-5 pb-14 lg:px-8"><RecommendationRail strategy="category-based" title={"More in " + categoryName} category={categorySlug} note="Based on the category you are browsing." enabled={Boolean(categorySlug)}/>
+      <RecommendationRail strategy="price-based" title="Within Your Price Range" note="Based on the typical price of products you have viewed, saved or added to your cart." enabled={Boolean(query)}/></div>
   <ProductQuickView product={quickView} onClose={()=>setQuickView(null)}/>
   <ProductComparison products={comparison} onRemove={id=>setComparison(old=>old.filter(p=>p.id!==id))} onClear={()=>setComparison([])}/>
  </main>;
