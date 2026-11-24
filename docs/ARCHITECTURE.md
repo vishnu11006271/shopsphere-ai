@@ -76,7 +76,7 @@ The recommendation implementation follows the PRD's enforced boundary: UI rail â
 ### Signal assembly and persistence
 - \`features/recommendations/store/recently-viewed-store.ts\` records the last 20 distinct PDP visits, newest first, with product snapshots in local storage.
 - The hook assembles recently viewed products, recent search queries, category context, wishlist products, cart lines, and product snapshots resolved from the customer's local order history. Live catalogue data is read through the existing TanStack Query product cache.
-- The engine derives the observed price band and brand affinity from available browsing/cart/purchase products. Search text is matched against product title, brand, category and tags. Product category, tags and rating come from the catalogue.
+- The engine derives the observed price band from available browsing, wishlist, cart and purchase products; brand affinity is derived from browsing frequency. Search text is matched against product title, brand, category and tags. Product category, tags and rating come from the catalogue.
 - \`recommendation-preferences-store.ts\` lets a customer enable or disable each of the ten signal families shown in the dashboard. Resetting personalization clears recently viewed and search history and restores the default signal toggles; it intentionally does not delete cart, wishlist, or order data.
 - \`recommendation-analytics-store.ts\` records local rail impressions, product clicks, and add-to-cart actions keyed by strategy and product ID. This is browser-local demo analytics, not an external analytics service.
 
