@@ -1,0 +1,16 @@
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowRight, ShoppingBag } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { formatAmount } from "@/features/cart/utils/cart";
+import { useCheckoutStore, ORDER_STATUS_LABELS } from "@/features/checkout/store/checkout-store";
+export function OrderHistoryPage(){
+const orders=useCheckoutStore(s=>s.orders), hydrated=useCheckoutStore(s=>s.hasHydrated);
+if(!hydrated)return <main className="mx-auto max-w-5xl px-5 py-16"><p role="status">Loading your orders…</p></main>;
+return <main className="mx-auto max-w-5xl px-5 pb-16 pt-8">
+<header className="mb-8 flex flex-wrap items-end justify-between gap-4"><div><Link href="/" className="text-sm font-black">shop<span className="text-brand">sphere</span><span className="ml-1 text-[10px] text-brand">AI</span></Link><h1 className="mt-4 text-3xl font-semibold">Your orders</h1><p className="mt-1 text-sm text-muted">Every simulated order, all in one place.</p></div><Link href="/products"><Button variant="secondary">Continue shopping <ArrowRight size={15}/></Button></Link></header>
+{orders.length===0?<section className="rounded-3xl bg-white px-6 py-16 text-center shadow-soft"><div className="mx-auto grid size-16 place-items-center rounded-full bg-[#e8eee7] text-brand"><ShoppingBag size={28}/></div><h2 className="mt-5 text-xl font-semibold">No orders yet</h2><p className="mt-2 text-sm text-muted">Once you complete checkout, your orders will appear here.</p><Link href="/products" className="mt-6 inline-flex"><Button>Explore products</Button></Link></section>:
+<section className="space-y-4" aria-label="Order history">{orders.map(order=><article key={order.id} className="rounded-3xl bg-white p-5 shadow-soft sm:p-6"><div className="flex flex-wrap items-start justify-between gap-3 border-b border-black/5 pb-4"><div><p className="font-mono text-sm font-bold">{order.id}</p><p className="mt-1 text-xs text-muted">Placed {new Date(order.createdAt).toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"})}</p></div><span className="rounded-full bg-[#e8eee7] px-3 py-1.5 text-xs font-semibold text-brand">{ORDER_STATUS_LABELS[order.status]}</span></div><div className="mt-4 flex flex-wrap items-center gap-3">{order.items.slice(0,3).map((item,index)=><div key={item.productId+"-"+index} className="relative size-16 overflow-hidden rounded-xl bg-canvas"><Image src={item.thumbnail} alt={item.title} fill sizes="64px" className="object-contain p-2"/></div>)}<div className="min-w-0 flex-1"><p className="text-sm font-semibold">{order.items.length} {order.items.length===1?"item":"items"}</p><p className="mt-1 text-xs text-muted">Estimated delivery: {order.delivery.eta}</p></div><div className="text-right"><p className="text-xs text-muted">Order total</p><p className="mt-1 font-bold">{formatAmount(order.total)}</p></div></div><div className="mt-5 flex justify-end"><Link href={"/orders/"+order.id}><Button variant="secondary">View order details <ArrowRight size={15}/></Button></Link></div></article>)}</section>}
+</main>;
+}
