@@ -42,7 +42,7 @@ DummyJSON product prices are source values, not INR-denominated prices. The curr
 - The PDP renders the catalogue image set with thumbnail navigation and a lightbox, core price/rating/stock metadata, optional variant controls, stock-clamped quantity, cart and Buy Now actions, description/specification tabs, and a local pincode delivery estimate.
 - DummyJSON's current product shape does not guarantee variants. Variant controls therefore render only when a provider supplies the optional typed `variants` field; no unsupported size/color options are fabricated.
 - The cart line retains an optional selected variant and treats each variant as a separate line.
-- Related, Similar, and Frequently Bought Together rails are visibly marked previews. Their final strategy-backed orchestration belongs to Phase 07; current data uses category/tag/cross-category catalogue heuristics only.
+- Phase 07 replaces the PDP rail previews with provider-backed Similar Products, Category-Based, Frequently Bought Together, and Personalized strategies; scoring remains outside the PDP component.
 - Review summary and available catalogue reviews are rendered from the product payload. Review creation, voting, moderation, and full review workflows remain in Phase 09.
 - Delivery estimates are explicitly simulated locally; they do not call a carrier or validate serviceability.
 
@@ -52,7 +52,7 @@ DummyJSON product prices are source values, not INR-denominated prices. The curr
 - The cart refreshes the DummyJSON catalogue through TanStack Query. A successful response detects removed products, stock changes, and changed prices. Unavailable lines block checkout; changed prices show old/new values and require explicit acceptance before proceeding. If refresh fails, last-known line data stays visible with a retry banner.
 - Coupon codes are local fixtures: `SPHERE10` and `WELCOME15` have minimum-subtotal and maximum-discount rules; `EXPIRED20` represents an expired code. Shipping is free at ₹2,499 or above, otherwise ₹99; simulated tax is 5% of subtotal after coupon discount. These are demonstration calculations, not tax or carrier quotes.
 - Wishlist retains out-of-stock and removed products with explicit status, shows the current catalogue price when available, and disables Move to Cart when the item is unavailable. Move to Cart adds an available product to the cart and removes it from the wishlist.
-- Cart and wishlist suggestion rails are simple category-overlap previews with signal-transparent headings. Full strategy scoring/orchestration remains Phase 07 scope.
+- Phase 07 replaces the initial category-overlap suggestions with the provider-backed Cart-Based and Wishlist-Based strategies.
 - Zustand persistence rehydrates on browser storage events so multiple tabs converge on the latest saved cart/wishlist snapshot; localStorage remains a demo persistence layer, not transactional server storage.
 
 ## Quality and accessibility
