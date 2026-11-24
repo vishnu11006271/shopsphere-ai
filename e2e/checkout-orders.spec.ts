@@ -41,6 +41,7 @@ test("customer can resume checkout after refresh, place a mock order, and track 
   await page.getByLabel(/Express delivery/).check();
   await page.getByRole("button", { name: /Continue/ }).click();
   await expect(page.getByRole("heading", { name: "Order summary" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Because of Your Cart" })).toBeVisible();
   await page.getByRole("button", { name: /Continue/ }).click();
 
   await expect(page.getByRole("heading", { name: "Mock payment" })).toBeVisible();
