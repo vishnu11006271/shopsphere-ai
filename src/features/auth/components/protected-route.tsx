@@ -28,6 +28,18 @@ export function ProtectedRoute({ children, requiredRole }: { children: React.Rea
     if (requiredRole && userRole !== requiredRole) router.replace("/account");
   }, [hasHydrated, pathname, requiredRole, router, userId, userRole]);
 
+  useEffect(() => {
+    if (!hasHydrated || !session) return;
+    const delay = Math.max(0, session.expiresAt - Date.now());
+    const timeout = window.setTimeout(() => {
+      const currentSession = useAuthStore.getState().session;
+      if (!currentSession || currentSession.expiresAt <= Date.now()) {
+        router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+      }
+    }, delay);
+    return () => window.clearTimeout(timeout);
+  }, [hasHydrated, pathname, router, session?.expiresAt]);
+
   if (!hasHydrated || !user || (requiredRole && user.role !== requiredRole)) {
     return <main className="grid min-h-screen place-items-center px-5"><p className="text-sm text-muted" role="status">Checking your session…</p></main>;
   }
