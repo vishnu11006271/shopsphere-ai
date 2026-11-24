@@ -65,7 +65,8 @@ const order=orders.find(item=>item.id===draft.completedOrderId);
 
 useEffect(()=>{
 if(!cartHydrated||!checkoutHydrated||!authHydrated||initialised)return;
-if(draft.completedOrderId&&order){setInitialised(true);return;}
+if(draft.completedOrderId&&order&&lines.length===0){setInitialised(true);return;}
+if(draft.completedOrderId&&lines.length>0){resetDraft();if(authUser){updateCustomer({name:authUser.name,email:authUser.email});updateAddress({fullName:authUser.name});}setInitialised(true);return;}
 if(lines.length===0){router.replace("/cart");return;}
 if(authUser){
 if(!draft.customer.name)updateCustomer({name:authUser.name,email:authUser.email});
