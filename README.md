@@ -40,7 +40,7 @@ Install the Playwright browser once with npx playwright install chromium.
 - Phase 06: six-step simulated checkout, local order creation/history, and an interactive delivery tracking timeline.
 - Phase 07: layered rule-based recommendation engine with all nine strategies, weighted scoring, transparent signal reasons, local preference controls, full recently viewed history, and local engagement analytics.
 - Phase 08: persistent rule-based shopping assistant with structured category/price/rating intent extraction, contextual refinements (including budget expansion), similarity requests, inline product cards, and clarifying fallbacks.
-- Phase 09: local admin operations dashboard (overview, catalogue/category management, order status simulation, review moderation, recommendation analytics) and customer review workflows (submission, sorting, rating distribution, voting, verified-purchase indicator, edit/remove in dashboard). Admin catalogue overrides are reflected in storefront catalogue and product detail reads.
+- Phase 09: local admin operations dashboard (overview, catalogue/category management, order status simulation, review moderation, recommendation analytics) and customer review workflows (submission, sorting, rating distribution, voting, verified-purchase indicator, edit/remove in dashboard). Admin catalogue overrides are reflected in storefront catalogue and product detail reads. Search and category discovery continue to use their dedicated DummyJSON endpoints while merging local admin changes.
 
 ## Scope and safety
 - Checkout is a simulation only; never enter real payment information. Mock Card and Mock UPI never request card numbers, CVV, bank credentials, or UPI PINs. Test success/decline outcomes are local UI state only.
