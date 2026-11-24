@@ -39,7 +39,7 @@ Install the Playwright browser once with npx playwright install chromium.
 - Phase 05: persistent cart and wishlist, stock and catalogue validation, price-change confirmation, coupons, simulated totals, save-for-later, move-to-wishlist/cart, and initial cart/wishlist recommendation previews (replaced by the full Phase 07 engine).
 - Phase 06: six-step simulated checkout, local order creation/history, and an interactive delivery tracking timeline.
 - Phase 07: layered rule-based recommendation engine with all nine strategies, weighted scoring, transparent signal reasons, local preference controls, full recently viewed history, and local engagement analytics.
-- Phase 08: persistent rule-based shopping assistant with structured category/price/rating intent extraction, contextual refinements, similarity requests, inline product cards, and clarifying fallbacks.
+- Phase 08: persistent rule-based shopping assistant with structured category/price/rating intent extraction, contextual refinements (including budget expansion), similarity requests, inline product cards, and clarifying fallbacks.
 - Remaining: admin operations and review submission workflows.
 
 ## Scope and safety
