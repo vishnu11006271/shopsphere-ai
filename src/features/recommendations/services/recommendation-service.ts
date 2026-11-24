@@ -1,5 +1,6 @@
 import { MockRecommendationProvider } from "../providers/mock-recommendation-provider";
 import type { RecommendationProvider } from "../providers/recommendation-provider";
+import type { Product } from "@/types/product";
 import type { RecommendationServiceRequest, RecommendationSignals, RecommendedProduct } from "../types";
 
 const provider: RecommendationProvider = new MockRecommendationProvider();
@@ -8,7 +9,7 @@ export const recommendationService = {
     const liveById=new Map(request.products.map((product)=>[product.id,product]));
     const wishlist=request.context.wishlistIds
       .map((id)=>liveById.get(id)??request.context.wishlistSnapshots.find((product)=>product.id===id))
-      .filter((product)=>Boolean(product));
+      .filter((product):product is Product=>Boolean(product));
     const purchases=request.context.purchaseIds
       .map((id)=>liveById.get(id))
       .filter((product)=>Boolean(product));
