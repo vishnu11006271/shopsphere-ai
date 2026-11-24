@@ -1,3 +1,50 @@
 [
-  {"id":"REV-1","productId":1,"rating":5,"title":"Great everyday pick","body":"Good quality for the price.","helpful":12,"verifiedPurchase":true}
+  {
+    "id": "REV-1",
+    "productId": 1,
+    "userId": "demo-customer",
+    "reviewerName": "Demo Customer",
+    "reviewerEmail": "customer@shopsphere.demo",
+    "rating": 5,
+    "title": "Great everyday pick",
+    "body": "Good quality for the price. The product matched the description and arrived in good condition.",
+    "createdAt": "2026-01-15T10:00:00.000Z",
+    "verifiedPurchase": false,
+    "helpfulCount": 12,
+    "notHelpfulCount": 0,
+    "votes": {},
+    "status": "PUBLISHED"
+  },
+  {
+    "id": "REV-2",
+    "productId": 1,
+    "userId": "fixture-reviewer-2",
+    "reviewerName": "Aarav",
+    "reviewerEmail": "aarav@example.test",
+    "rating": 4,
+    "title": "Solid value",
+    "body": "The build feels reliable and setup was straightforward. A good option for everyday use.",
+    "createdAt": "2026-02-02T09:30:00.000Z",
+    "verifiedPurchase": false,
+    "helpfulCount": 5,
+    "notHelpfulCount": 1,
+    "votes": {},
+    "status": "PUBLISHED"
+  },
+  {
+    "id": "REV-3",
+    "productId": 1,
+    "userId": "fixture-reviewer-3",
+    "reviewerName": "Mira",
+    "reviewerEmail": "mira@example.test",
+    "rating": 3,
+    "title": "Works as expected",
+    "body": "It does what I expected, although the overall experience could be a little better.",
+    "createdAt": "2026-02-08T14:15:00.000Z",
+    "verifiedPurchase": false,
+    "helpfulCount": 2,
+    "notHelpfulCount": 0,
+    "votes": {},
+    "status": "PUBLISHED"
+  }
 ]

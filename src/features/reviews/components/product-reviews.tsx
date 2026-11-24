@@ -50,7 +50,7 @@ export function ProductReviews({ product }: { product: Product }) {
   const distribution = getRatingDistribution(reviews);
   const average = getAverageRating(reviews);
   const canReview = user?.role === "CUSTOMER";
-  const alreadyReviewed = Boolean(user && reviews.some((review) => review.userId === user.id));
+  const alreadyReviewed = Boolean(user && allReviews.some((review) => review.productId === product.id && review.userId === user.id));
 
   function submitReview(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

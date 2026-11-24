@@ -2,18 +2,11 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import reviewFixtures from "../../../../public/mock-data/reviews.json";
 import type { ProductReviewRecord, ReviewStatus, ReviewVote } from "../types";
 import { getReviewVoteCounts } from "../utils/review-utils";
 
-const seedReviews: ProductReviewRecord[] = [
-  {
-    id: "REV-1", productId: 1, userId: "demo-customer", reviewerName: "Demo Customer",
-    reviewerEmail: "customer@shopsphere.demo", rating: 5, title: "Great everyday pick",
-    body: "Good quality for the price. The product matched the description and arrived in good condition.",
-    createdAt: "2026-01-15T10:00:00.000Z", verifiedPurchase: false,
-    helpfulCount: 12, notHelpfulCount: 0, votes: {}, status: "PUBLISHED",
-  },
-];
+const seedReviews = reviewFixtures as ProductReviewRecord[];
 
 interface ReviewState {
   reviews: ProductReviewRecord[];
@@ -24,7 +17,7 @@ interface ReviewState {
   setReviewStatus: (id: string, status: ReviewStatus) => void;
 }
 
-export const useReviewStore = create<ReviewState>()(persist((set, get) => ({
+export const useReviewStore = create<ReviewState>()(persist((set) => ({
   reviews: seedReviews,
   addReview: (payload) => {
     const review: ProductReviewRecord = {
@@ -46,8 +39,11 @@ export const useReviewStore = create<ReviewState>()(persist((set, get) => ({
       const votes = { ...review.votes };
       if (votes[userId] === vote) delete votes[userId];
       else votes[userId] = vote;
+      const previousCounts = getReviewVoteCounts(review.votes);
+      const baselineHelpful = Math.max(0, review.helpfulCount - previousCounts.helpful);
+      const baselineNotHelpful = Math.max(0, review.notHelpfulCount - previousCounts.notHelpful);
       const counts = getReviewVoteCounts(votes);
-      return { ...review, votes, helpfulCount: counts.helpful, notHelpfulCount: counts.notHelpful };
+      return { ...review, votes, helpfulCount: baselineHelpful + counts.helpful, notHelpfulCount: baselineNotHelpful + counts.notHelpful };
     }),
   })),
   setReviewStatus: (id, status) => set((state) => ({
