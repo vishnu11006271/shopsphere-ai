@@ -11,6 +11,7 @@ import { useCartStore } from "@/store/cart-store";
 import { calculateCartTotals, formatAmount, unitPriceINR } from "@/features/cart/utils/cart";
 import { useCheckoutStore, type DeliveryChoice, type ShopOrder } from "@/features/checkout/store/checkout-store";
 import { validateAddress, validateCustomer } from "@/features/checkout/utils/checkout";
+import { RecommendationRail } from "@/features/recommendations/components/recommendation-rail";
 
 const stepLabels=["Customer","Address","Delivery","Review","Payment","Confirmation"];
 const fieldClass="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10";
