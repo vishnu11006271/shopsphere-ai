@@ -46,7 +46,7 @@ test("customer can resume checkout after refresh, place a mock order, and track 
   await expect(page.getByRole("heading", { name: "Mock payment" })).toBeVisible();
   await page.getByRole("button", { name: "Simulate decline" }).click();
   await page.getByRole("button", { name: /^Pay / }).click();
-  await expect(page.getByRole("alert")).toContainText("mock payment was declined");
+  await expect(page.getByText("The mock payment was declined")).toBeVisible();
   await page.getByRole("button", { name: "Simulate success" }).click();
   await page.getByRole("button", { name: /^Pay / }).click();
 
