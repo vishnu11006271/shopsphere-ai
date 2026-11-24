@@ -54,6 +54,11 @@ describe("recommendation engine",()=>{
     expect(results.length).toBeGreaterThan(0);
     expect(results.every((item)=>item.product.category==="smartphones")).toBe(true);
   });
+  it("infers category-based recommendations from search history",()=>{
+    const results=run("category-based",{recentlyViewed:[],wishlist:[],cart:[],purchases:[],searchQueries:["smartphones"]});
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.every((item)=>item.product.category==="smartphones")).toBe(true);
+  });
   it("ranks products near the customer's observed price average",()=>{
     const results=run("price-based");
     expect(results[0].product.id).toBe(3);
