@@ -25,7 +25,7 @@ test("returning visitor sees recently viewed and personalized recommendations", 
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /Because You Viewed/ })).toBeVisible();
   await page.getByLabel("Recently viewed products").click();
-  await expect(page.locator("details").getByRole("link").first()).toHaveAttribute("href", "/products/1");
+  await expect(page.locator('details:has(summary[aria-label="Recently viewed products"])').getByRole("link").first()).toHaveAttribute("href", "/products/1");
   await expect(page.getByRole("heading", { name: "Recommended For You" })).toBeVisible();
 });
 
