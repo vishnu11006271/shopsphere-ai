@@ -55,7 +55,7 @@ test("customer can resume checkout after refresh, place a mock order, and track 
   await page.getByRole("link", { name: /Track your order/ }).click();
   await expect(page.getByRole("heading", { name: "Delivery progress" })).toBeVisible();
   await page.getByRole("button", { name: "Advance to Packed" }).click();
-  await expect(page.getByText("Packed", { exact: true })).toBeVisible();
+  await expect(page.locator("ol").getByText("Packed", { exact: true })).toBeVisible();
   await page.getByRole("link", { name: /All orders/ }).click();
   await expect(page.getByRole("heading", { name: "Your orders" })).toBeVisible();
 });
