@@ -59,6 +59,7 @@ export interface RecommendationWeights {
   recentlyViewedRelation: number;
   wishlistRelation: number;
   cartRelation: number;
+  purchaseRelation: number;
 }
 
 export interface RecommendationContext {
