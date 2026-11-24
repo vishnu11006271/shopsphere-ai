@@ -115,7 +115,8 @@ function categoryBased(request:RecommendationRequest):RecommendedProduct[] {
 }
 function priceBased(request:RecommendationRequest):RecommendedProduct[] {
   const target=typicalPrice(request.signals);if(target===null)return [];
-  return request.products.filter((product)=>product.stock>0&&product.id!==request.currentProduct?.id)
+  const excluded=new Set(sourceProducts(request.signals).map((product)=>product.id));
+  return request.products.filter((product)=>product.stock>0&&product.id!==request.currentProduct?.id&&!excluded.has(product.id))
     .map((product)=>({product,strategy:"price-based" as const,score:clamp01(1-Math.abs(product.price-target)/Math.max(target,1)),reasons:[{label:"Typical price range",detail:"Your observed average catalogue price is "+target.toFixed(2)}]}))
     .sort((a,b)=>b.score-a.score||b.product.rating-a.product.rating).slice(0,request.limit??8);
 }
