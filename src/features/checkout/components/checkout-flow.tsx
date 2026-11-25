@@ -59,7 +59,7 @@ const [addressErrors,setAddressErrors]=useState<Record<string,string>>({});
 const [paymentError,setPaymentError]=useState("");
 const [placing,setPlacing]=useState(false);
 const [initialised,setInitialised]=useState(false);
-const totals=useMemo(()=>calculateCartTotals(lines,couponCode),[lines]);
+const totals=useMemo(()=>calculateCartTotals(lines,couponCode),[lines,couponCode]);
 const choices=useMemo(()=>deliveryChoices(totals.shipping),[totals.shipping]);
 const selectedDelivery=choices.find(choice=>choice.id===draft.deliveryId)??choices[0];
 const order=orders.find(item=>item.id===draft.completedOrderId);
@@ -74,7 +74,7 @@ if(!draft.customer.name)updateCustomer({name:authUser.name,email:authUser.email}
 if(!draft.address.fullName)updateAddress({fullName:authUser.name,phone:draft.customer.phone});
 }
 setInitialised(true);
-},[authHydrated,authUser,cartHydrated,checkoutHydrated,draft.address.fullName,draft.completedOrderId,draft.customer.email,draft.customer.name,initialised,lines.length,order,router,resetDraft,updateAddress,updateCustomer]);
+},[authHydrated,authUser,cartHydrated,checkoutHydrated,draft.address.fullName,draft.completedOrderId,draft.customer.email,draft.customer.name,initialised,lines.length,order,router,resetDraft,updateAddress,updateCustomer,draft.customer.phone]);
 
 if(!cartHydrated||!checkoutHydrated||!authHydrated||!initialised)return <main className="mx-auto max-w-5xl px-5 py-16"><p role="status" className="text-sm text-muted">Restoring your saved checkout…</p></main>;
 if(draft.completedOrderId&&order)return <main className="mx-auto max-w-5xl px-5 py-12"><OrderConfirmation order={order}/></main>;
