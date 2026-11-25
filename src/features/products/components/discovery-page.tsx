@@ -38,7 +38,7 @@ function DiscoveryContent({categorySlug=""}:{categorySlug?:string}) {
  const [quickView,setQuickView]=useState<Product|null>(null);const [comparison,setComparison]=useState<Product[]>([]);const [compareMessage,setCompareMessage]=useState("");const [mobileFiltersOpen,setMobileFiltersOpen]=useState(false);
  const categoryQuery=useQuery({queryKey:productKeys.categories,queryFn:({signal})=>productService.getCategories(signal),staleTime:600000});
  const productsQuery=useQuery({queryKey:productKeys.discovery(query,categorySlug),queryFn:({signal})=>productService.discover(query,categorySlug,signal),staleTime:120000});
- const products=productsQuery.data?.products??[];
+ const products=useMemo(()=>productsQuery.data?.products??[],[productsQuery.data?.products]);
  const cartCount=useCartStore(state=>state.items.reduce((sum,item)=>sum+item.quantity,0));
  const wishlistCount=useWishlistStore(state=>state.productIds.length);
  const filtered=useMemo(()=>filterAndSortProducts(products,filters),[products,filters]);
