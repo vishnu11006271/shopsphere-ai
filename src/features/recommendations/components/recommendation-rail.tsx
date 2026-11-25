@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { ArrowRight, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/store/cart-store";
@@ -21,7 +21,10 @@ export function RecommendationRail({strategy,title,note,currentProduct,category,
 }) {
   const query=useRecommendations({strategy,currentProduct,category,limit,enabled});
   const fallback=useRecommendations({strategy:"trending",limit,enabled:query.isError&&strategy!=="trending"});
-  const items=query.isError&&strategy!=="trending"?fallback.data??[]:query.data??[];
+  const items=useMemo(
+    ()=>query.isError&&strategy!=="trending"?fallback.data??[]:query.data??[],
+    [fallback.data,query.data,query.isError,strategy],
+  );
   const recordImpression=useRecommendationAnalyticsStore((state)=>state.recordImpression);
   const recordClick=useRecommendationAnalyticsStore((state)=>state.recordClick);
   const recordAddToCart=useRecommendationAnalyticsStore((state)=>state.recordAddToCart);

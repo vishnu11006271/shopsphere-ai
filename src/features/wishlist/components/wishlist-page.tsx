@@ -11,7 +11,6 @@ import { formatAmount, unitPriceINR } from "@/features/cart/utils/cart";
 import { productKeys, productService } from "@/features/products/services/product-service";
 import { useCartStore } from "@/store/cart-store";
 import { useWishlistStore } from "@/features/wishlist/store/wishlist-store";
-import type { Product } from "@/types/product";
 import { RecommendationRail } from "@/features/recommendations/components/recommendation-rail";
 
 export function WishlistPage() {
