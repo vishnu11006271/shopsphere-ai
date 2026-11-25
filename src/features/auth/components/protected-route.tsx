@@ -38,7 +38,7 @@ export function ProtectedRoute({ children, requiredRole }: { children: React.Rea
       }
     }, delay);
     return () => window.clearTimeout(timeout);
-  }, [hasHydrated, pathname, router, session?.expiresAt]);
+  }, [hasHydrated, pathname, router, session]);
 
   if (!hasHydrated || !user || (requiredRole && user.role !== requiredRole)) {
     return <main className="grid min-h-screen place-items-center px-5"><p className="text-sm text-muted" role="status">Checking your session…</p></main>;
