@@ -3,14 +3,7 @@
 import Link from "next/link";
 
 import { useQuery } from "@tanstack/react-query";
-import {
-  ArrowRight,
-  Search,
-  ShoppingBag,
-  Sparkles,
-  Heart,
-  Menu,
-} from "lucide-react";
+import { ArrowRight, Search, ShoppingBag, Sparkles, Heart, Menu } from "lucide-react";
 import {
   productKeys,
   productService,
