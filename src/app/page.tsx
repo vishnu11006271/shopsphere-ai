@@ -39,7 +39,9 @@ export default function HomePage() {
   return (
     <main className="min-h-screen">
       <header className="sticky top-0 z-20 border-b border-black/5 bg-canvas/90 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-4 py-4 sm:px-5 lg:px-8">
+        <div
+          className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-4 py-4 sm:px-5 lg:px-8"
+        >
           <a href="#top" className="text-xl font-black tracking-tight">
             shop<span className="text-brand">sphere</span>
             <span className="ml-1 align-top text-[10px] text-brand">AI</span>
