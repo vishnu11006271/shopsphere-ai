@@ -1,9 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-test("guest is redirected from a protected route to the login screen", async ({ page }) => {
+test("guest is redirected from a protected route to the login screen", async ({
+  page,
+}) => {
   await page.goto("/admin");
   await expect(page).toHaveURL(/\/login\?next=%2Fadmin/);
-  await expect(page.getByRole("heading", { name: "Sign in to your account" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Sign in to your account" }),
+  ).toBeVisible();
 });
 
 for (const credentials of [
@@ -20,11 +24,13 @@ for (const credentials of [
     await page.getByRole("button", { name: /sign out/i }).click();
 
     await expect(page).toHaveURL(/\/login\?next=%2Faccount$/);
-    await expect(page.getByRole("heading", { name: "Sign in to your account" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Sign in to your account" }),
+    ).toBeVisible();
 
     const persistedAuth = await page.evaluate(() => {
       const value = localStorage.getItem("shopsphere-auth");
-      return value ? JSON.parse(value) as { state?: { session?: unknown } } : null;
+      return value ? (JSON.parse(value) as { state?: { session?: unknown } }) : null;
     });
     expect(persistedAuth?.state?.session).toBeNull();
   });

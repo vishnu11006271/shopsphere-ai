@@ -41,7 +41,7 @@ Targets for field Core Web Vitals are LCP ≤ 2.5s, INP ≤ 200ms and CLS ≤ 0.
 - The application is a frontend-only demonstration. Local role checks, browser storage and simulated orders are not trusted authorization or transactional controls.
 - Do not store real passwords, payment credentials, access tokens or personal customer data in demo browser storage.
 - Do not add real payment fields or claim payment-provider integration.
-- Do not expose secrets through NEXT_PUBLIC_ variables or commit .env.local.
+- Do not expose secrets through NEXT*PUBLIC* variables or commit .env.local.
 - Response headers are defense-in-depth; they do not turn the frontend-only authentication model into production security.
 - Review dependency audit output and update dependencies deliberately; do not apply blind major-version upgrades.
 

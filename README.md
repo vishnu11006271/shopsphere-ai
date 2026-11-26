@@ -3,6 +3,7 @@
 Personalized shopping, powered by transparent signals. This repository implements the approved ShopSphere AI PRD as a frontend-only e-commerce application.
 
 ## Stack
+
 - Next.js App Router + React + TypeScript
 - Tailwind CSS and shadcn/ui-compatible accessible primitives
 - Zustand for client state; TanStack Query for server/cache state
@@ -10,9 +11,11 @@ Personalized shopping, powered by transparent signals. This repository implement
 - Vitest, React Testing Library, and Playwright
 
 ## Requirements
+
 Node.js 22+ and npm. No paid API keys or backend services are required.
 
 ## Setup
+
 ```bash
 cp .env.example .env.local
 npm install
@@ -22,6 +25,7 @@ npm run dev
 Open http://localhost:3000.
 
 ## Quality checks
+
 ```bash
 npm run typecheck
 npm run test
@@ -32,6 +36,7 @@ npm run build
 Install the Playwright browser once with npx playwright install chromium.
 
 ## Implementation status
+
 - Phase 01: foundation and architecture.
 - Phase 02: local/JWT-compatible development authentication.
 - Phase 03: product discovery, filters, sorting, URL-synced search, wishlist toggles, quick view, and comparison.
@@ -43,6 +48,7 @@ Install the Playwright browser once with npx playwright install chromium.
 - Phase 09: local admin operations dashboard (overview, catalogue/category management, order status simulation, review moderation, recommendation analytics) and customer review workflows (submission, sorting, rating distribution, voting, verified-purchase indicator, edit/remove in dashboard). Admin catalogue overrides are reflected in storefront catalogue and product detail reads. Search and category discovery continue to use their dedicated DummyJSON endpoints while merging local admin changes. Verified-purchase labels are computed from matching local order records. The review form waits for local order-history hydration before accepting submissions.
 
 ## Scope and safety
+
 - Checkout is a simulation only; never enter real payment information. Mock Card and Mock UPI never request card numbers, CVV, bank credentials, or UPI PINs. Test success/decline outcomes are local UI state only.
 - Checkout progress and orders are persisted in browser local storage. Session expiry redirects to sign-in and returns to the saved checkout step after re-authentication; this is not server-side transactional storage.
 - Shipping, tax, and coupon behavior in the cart are deterministic local simulations.

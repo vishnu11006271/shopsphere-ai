@@ -17,7 +17,8 @@ test("unknown routes expose a clear not-found recovery action", async ({ page })
   await expect(
     page.getByRole("heading", { name: "We couldn't find that page" }),
   ).toBeVisible();
-  await expect(
-    page.getByRole("link", { name: "Return to ShopSphere" }),
-  ).toHaveAttribute("href", "/");
+  await expect(page.getByRole("link", { name: "Return to ShopSphere" })).toHaveAttribute(
+    "href",
+    "/",
+  );
 });

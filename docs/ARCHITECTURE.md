@@ -1,6 +1,7 @@
 # Architecture
 
 ## Runtime and boundaries
+
 - Next.js App Router owns routing, layouts, metadata, and page composition.
 - `features/` owns domain-specific UI, hooks, and feature logic.
 - `services/` owns API access and business orchestration; it must not import React.
@@ -9,21 +10,27 @@
 - `components/` contains reusable presentational primitives only.
 
 ## Data source
+
 DummyJSON is the primary product catalogue. Orders, reviews, recommendations, preferences, and analytics are local fixtures and browser-persisted state. DummyJSON write endpoints are not treated as durable storage.
 
 ## Pagination decision
+
 Product discovery uses the complete bounded mock catalogue and client-side pagination after filters/sort. Search and filters are reflected in URL query parameters. Move to server-side faceted pagination when the data source grows beyond a small mock catalogue.
 
 ## Recommendation boundary
+
 The planned contract is UI hook → recommendation service → provider interface → rule-based mock engine. Scoring and strategy selection stay outside React components so a future provider can replace the mock engine without changing the UI.
 
 ## Authentication and checkout scope
+
 Authentication is a development-only, JWT-compatible local session. Checkout is simulated and must never request real card numbers, CVV, bank credentials, or UPI PINs. Admin writes are labeled as local/simulated.
 
 ## Currency note
+
 DummyJSON product prices are source values, not INR-denominated prices. The current UI applies a clearly temporary display conversion for visual scaffolding only; it is not a live exchange rate or authoritative price model.
 
 ## Authentication (Phase 02)
+
 - `features/auth/types.ts` defines customer/admin roles, local user record, public user projection, and expiring session shape.
 - `features/auth/services/password.ts` uses browser Web Crypto PBKDF2-SHA-256 for local demo password hashes. This is a development convenience, not a replacement for server-side password hashing and identity controls.
 - `features/auth/store/auth-store.ts` owns local registration, login, logout, and the seven-day mock session. The session and local user records are persisted under `shopsphere-auth` in local storage; no password is placed in the session object.
@@ -31,6 +38,7 @@ DummyJSON product prices are source values, not INR-denominated prices. The curr
 - This frontend-only role check is for demonstration and UX gating only. Production identity and authorization must be enforced by a trusted server.
 
 ## Product discovery (Phase 03)
+
 - `features/products/services/product-service.ts` is the only layer calling DummyJSON product and category endpoints.
 - `filter-products.ts` is a pure filter/sort pipeline; filter values use displayed INR units and are converted consistently for comparison.
 - `DiscoveryPage` is reused by `/products`, `/search`, and `/category/[slug]`. It owns URL-synchronized filter state, client pagination, and comparison selection.
@@ -38,6 +46,7 @@ DummyJSON product prices are source values, not INR-denominated prices. The curr
 - Discovery cards expose wishlist, quick view, add-to-cart, and compare actions.
 
 ## Product detail (Phase 04)
+
 - `/products/[id]` is the shareable PDP route; product detail and category data are fetched through `productService` and cached by TanStack Query.
 - The PDP renders the catalogue image set with thumbnail navigation and a lightbox, core price/rating/stock metadata, optional variant controls, stock-clamped quantity, cart and Buy Now actions, description/specification tabs, and a local pincode delivery estimate.
 - DummyJSON's current product shape does not guarantee variants. Variant controls therefore render only when a provider supplies the optional typed `variants` field; no unsupported size/color options are fabricated.
@@ -47,6 +56,7 @@ DummyJSON product prices are source values, not INR-denominated prices. The curr
 - Delivery estimates are explicitly simulated locally; they do not call a carrier or validate serviceability.
 
 ## Cart and wishlist (Phase 05)
+
 - `/cart` and `/wishlist` are client-facing routes backed by persistent Zustand stores. Cart lines and saved-for-later lines retain last-known product snapshots; wishlist keeps product IDs plus last-known product snapshots for graceful offline rendering.
 - Cart operations are keyed by product and optional variant ID, increment duplicate additions, clamp quantity to available stock, and keep saved-for-later items separate from active checkout totals.
 - The cart refreshes the DummyJSON catalogue through TanStack Query. A successful response detects removed products, stock changes, and changed prices. Unavailable lines block checkout; changed prices show old/new values and require explicit acceptance before proceeding. If refresh fails, last-known line data stays visible with a retry banner.
@@ -56,11 +66,12 @@ DummyJSON product prices are source values, not INR-denominated prices. The curr
 - Zustand persistence rehydrates on browser storage events so multiple tabs converge on the latest saved cart/wishlist snapshot; localStorage remains a demo persistence layer, not transactional server storage.
 
 ## Quality and accessibility
+
 - Commerce pages provide loading, empty, retry, unavailable, and validation states; controls have accessible names and semantic regions.
 - Unit tests cover cart calculations/coupon validation; Playwright covers add-to-cart, wishlist, and move-to-cart flows.
 
-
 ## Checkout and orders (Phase 06)
+
 - `features/checkout/store/checkout-store.ts` owns the locally persisted checkout draft and order history. The draft records the active step, customer details, shipping address, delivery selection, mock payment method, and deterministic test outcome.
 - `/checkout` is protected for signed-in customers and implements the PRD's six stages: Customer Information → Address → Delivery Method → Order Summary → Mock Payment → Confirmation. Customer and address fields are validated inline; the address and active step survive browser refresh.
 - When a development session expires, the existing protected-route behavior redirects the shopper to sign-in with `next=/checkout`. The draft remains in local storage and is restored after re-authentication.
@@ -69,11 +80,12 @@ DummyJSON product prices are source values, not INR-denominated prices. The curr
 - The tracking page exposes a clearly labeled local simulation control to advance the status and append a timestamp. This is not a real logistics integration. Order persistence is browser-local and is not shared across devices or users.
 - Delivery choices use local simulated prices and ETAs. The cart's existing coupon discount and 5% illustrative tax are carried into the order summary; the selected delivery price replaces the cart's standard shipping value.
 
-
 ## Recommendation engine (Phase 07)
+
 The recommendation implementation follows the PRD's enforced boundary: UI rail → `useRecommendations` hook → `recommendationService` → `RecommendationProvider` contract → `MockRecommendationProvider` → pure mock engine. React components never implement scoring or candidate filtering. The provider can be replaced later without changing the UI or hook contract. Other strategies (category, price, wishlist, cart and recently viewed) use the same typed generic service function.
 
 ### Signal assembly and persistence
+
 - `features/recommendations/store/recently-viewed-store.ts` records every distinct PDP visit, newest first, with product snapshots in local storage; the homepage and header show previews while the dashboard exposes the full history.
 - The hook assembles recently viewed products, recent search queries, category context, wishlist products, cart lines, and product snapshots resolved from the customer's local order history. Live catalogue data is read through the existing TanStack Query product cache.
 - The engine derives the observed price band from recently viewed and carted products; brand affinity is derived from browsing frequency. Previous simulated purchases remain eligible for repeat/replenishment suggestions. Search text is matched against product title, brand, category and tags. Product category, tags and rating come from the catalogue.
@@ -81,6 +93,7 @@ The recommendation implementation follows the PRD's enforced boundary: UI rail �
 - `recommendation-analytics-store.ts` records local rail impressions, product clicks, and add-to-cart actions keyed by strategy and product ID. This is browser-local demo analytics, not an external analytics service.
 
 ### Nine strategies and placements
+
 1. Recently Viewed — stored PDP history in most-recent-first order; homepage and header dropdown.
 2. Similar Products — current PDP anchor, category, Jaccard tag overlap and price similarity; PDP.
 3. Category-Based — current or dominant category interest; homepage, category discovery and PDP.
@@ -92,6 +105,7 @@ The recommendation implementation follows the PRD's enforced boundary: UI rail �
 9. Personalized For You — weighted blend of the available category, price, tags, rating, recently-viewed, wishlist, cart, previous-purchase and brand signals; homepage, customer dashboard and PDP. With no meaningful history, it falls back to the trending ranking.
 
 ### Auditable weighted scoring
+
 Each of the seven PRD scoring components is normalized to 0–1. The chosen implementation weights, including an additional repeat-purchase term, sum to 1.00:
 | Component | Weight |
 |---|---:|
@@ -107,14 +121,15 @@ Each of the seven PRD scoring components is normalized to 0–1. The chosen impl
 The composite is the sum of the seven PRD-required component × weight terms plus a previous-purchase relation term (0.09), then a small brand-affinity bonus (up to 0.05) is added and the result is clamped to 0–1. Related-product, wishlist and cart rails require a minimum 0.25 relation score; price-band suggestions require at least 0.50 price similarity. These gates prevent weak, arbitrary matches from being labeled as recommendations. Similarity between a candidate and a signal product is 40% category match, 40% tag Jaccard overlap and 20% price similarity. Price similarity is 1.0 inside the observed min/max band and decays linearly outside it; for a PDP anchor it decays with relative price distance. Rating is product rating divided by five. Ties are resolved deterministically by rating and product ID. These weights are implementation choices permitted by PRD Section 6.2 and are intentionally documented for review.
 
 ### Failure behavior and transparency
+
 - A recommendation query failure attempts the Trending strategy as a graceful fallback; if both the service and cached catalogue are unavailable, the rail hides instead of rendering an empty/broken container.
 - On the homepage, a first-time visitor sees Featured and Trending products. Recently Viewed and Personalized rails are hidden until meaningful signals exist.
 - Recommendation cards show a reason label, are clickable to the PDP, and record local impression/click/add-to-cart events.
 - The dashboard's Recommendation Preferences panel lists the signals, observed history/price range and toggles. A customer can reset browsing/search personalization without losing commerce data.
 - Mock popularity, rating-velocity and category co-purchase data are deterministic local fixtures. They are not claimed as real sales or popularity analytics, and no paid API or LLM is used.
 
-
 ## AI Shopping Assistant (Phase 08)
+
 - The persistent AssistantWidget is mounted by the Server Component root layout and opens as a responsive docked panel on desktop or full-screen panel on mobile. Session message history and refinement context remain available while navigating between routes; refreshing starts a new chat session.
 - The widget reads the existing product catalogue through TanStack Query and the existing productService. It does not introduce a second product API implementation or a paid service.
 - intent-parser.ts is a pure TypeScript parser. It extracts category aliases/slugs, maximum and minimum displayed price, minimum rating, and supported colour refinements. Follow-up phrases such as cheaper, more expensive, better rated, and a new category are applied to the previous structured intent.
@@ -123,8 +138,8 @@ The composite is the sum of the seven PRD-required component × weight terms plu
 - Unclear messages return a clarifying response with three suggested prompts rather than unrelated products. The interface and this documentation identify the feature as a rule-based/mock assistant; no LLM, API key, or external AI service is used.
 - Assistant budget filters use the storefront's illustrative catalogue price × 85 display conversion; this is not a live INR conversion.
 
-
 ## Admin dashboard and reviews (Phase 09)
+
 - `features/admin/store/admin-catalog-store.ts` persists product overrides, added/removed products, and category changes in browser storage. `productService` merges these local changes into DummyJSON catalogue reads so locally edited catalogue items are reflected in storefront discovery and PDP queries. These are local-only writes and do not mutate DummyJSON.
 - `/admin` remains protected by the existing ADMIN role gate. The dashboard overview reports local product/order/customer counts, simulated revenue and conversion, top-rated catalogue products, low-stock alerts, and review counts. Product management supports searchable/filterable products, add/edit/delete, local category create/rename/remove, and stock updates. Order management filters by status, customer/order ID and date range, shows line items/totals, and advances the existing six-state simulated tracking timeline.
 - Recommendation analytics reads the Phase 07 browser-local impression, click and add-to-cart event maps. It reports totals, simulated click-to-add conversion, and per-strategy engagement under a visible Local Analytics label.
