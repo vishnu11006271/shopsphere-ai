@@ -94,7 +94,10 @@ export default function HomePage() {
                 </span>
               )}
             </Link>
-            <button aria-label="Open menu" className="shrink-0 rounded-full p-2 md:hidden">
+            <button
+              aria-label="Open menu"
+              className="shrink-0 rounded-full p-2 md:hidden"
+            >
               <Menu size={18} />
             </button>
           </div>
