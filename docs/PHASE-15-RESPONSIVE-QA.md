@@ -8,13 +8,13 @@ This phase verifies the existing frontend against the ShopSphere AI PRD. It does
 
 The Playwright suite checks the storefront home page and a representative product detail page at these viewport sizes:
 
-| Profile | Viewport |
-|---|---:|
-| Mobile | 375 × 812 |
-| Tablet | 768 × 1024 |
-| Laptop | 1024 × 768 |
-| Desktop | 1440 × 900 |
-| Large desktop | 1920 × 1080 |
+| Profile       | Viewport      |
+| ------------- | ------------- |
+| Mobile        | 375 × 812     |
+| Tablet        | 768 × 1024    |
+| Laptop        | 1024 × 768    |
+| Desktop       | 1440 × 900    |
+| Large desktop | 1920 × 1080   |
 
 For each route and viewport, the test verifies that the main content is visible and that neither the document nor body width exceeds the viewport.
 
