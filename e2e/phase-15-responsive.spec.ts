@@ -25,15 +25,12 @@ test("responsive routes fit the five QA viewports", async ({ page }) => {
 
       const diagnostics = await page.evaluate(() => {
         const viewportWidth = document.documentElement.clientWidth;
-        const overflowingElements = Array.from(
-          document.querySelectorAll("body *"),
-        )
+        const overflowingElements = Array.from(document.querySelectorAll("body *"))
           .map((element) => {
             const rect = element.getBoundingClientRect();
             return {
               tag: element.tagName.toLowerCase(),
-              className:
-                typeof element.className === "string" ? element.className : "",
+              className: typeof element.className === "string" ? element.className : "",
               id: element.id,
               left: Math.round(rect.left),
               right: Math.round(rect.right),
