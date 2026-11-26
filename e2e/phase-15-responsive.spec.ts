@@ -21,15 +21,33 @@ test("responsive routes fit the five QA viewports", async ({ page }) => {
       await page.goto(route);
       await expect(page.locator("#main-content")).toBeVisible();
 
-      const dimensions = await page.evaluate(() => ({
-        viewportWidth: window.innerWidth,
-        documentWidth: document.documentElement.scrollWidth,
-        bodyWidth: document.body.scrollWidth,
-      }));
+      const dimensions = await page.evaluate(() => {
+        const overflowingElements = Array.from(document.querySelectorAll("body *"))
+          .map((element) => {
+            const rect = element.getBoundingClientRect();
+
+            return {
+              tag: element.tagName,
+              className: element.getAttribute("class"),
+              width: Math.round(rect.width),
+              left: Math.round(rect.left),
+              right: Math.round(rect.right),
+            };
+          })
+          .filter((element) => element.right > window.innerWidth)
+          .slice(0, 10);
+
+        return {
+          viewportWidth: window.innerWidth,
+          documentWidth: document.documentElement.scrollWidth,
+          bodyWidth: document.body.scrollWidth,
+          overflowingElements,
+        };
+      });
 
       expect(
         dimensions.documentWidth,
-        `${viewport.name} (${viewport.width}px), route ${route}: document overflow`,
+        `${viewport.name} (${viewport.width}px), route ${route}: document overflow. Offenders: ${JSON.stringify(dimensions.overflowingElements)}`,
       ).toBeLessThanOrEqual(dimensions.viewportWidth);
 
       expect(
