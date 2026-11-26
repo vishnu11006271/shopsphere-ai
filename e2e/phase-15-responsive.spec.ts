@@ -11,31 +11,31 @@ const responsiveViewports = [
 const routes = ["/", "/products/1"];
 
 test("responsive routes fit the five QA viewports", async ({ page }) => {
-    for (const viewport of responsiveViewports) {
-      await page.setViewportSize({
-        width: viewport.width,
-        height: viewport.height,
-      });
+  for (const viewport of responsiveViewports) {
+    await page.setViewportSize({
+      width: viewport.width,
+      height: viewport.height,
+    });
 
-      for (const route of routes) {
-        await page.goto(route);
-        await expect(page.locator("#main-content")).toBeVisible();
+    for (const route of routes) {
+      await page.goto(route);
+      await expect(page.locator("#main-content")).toBeVisible();
 
-        const dimensions = await page.evaluate(() => ({
-          viewportWidth: window.innerWidth,
-          documentWidth: document.documentElement.scrollWidth,
-          bodyWidth: document.body.scrollWidth,
-        }));
+      const dimensions = await page.evaluate(() => ({
+        viewportWidth: window.innerWidth,
+        documentWidth: document.documentElement.scrollWidth,
+        bodyWidth: document.body.scrollWidth,
+      }));
 
-        expect(
-          dimensions.documentWidth,
-          `${viewport.name} (${viewport.width}px), route ${route}: document overflow`,
-        ).toBeLessThanOrEqual(dimensions.viewportWidth);
+      expect(
+        dimensions.documentWidth,
+        `${viewport.name} (${viewport.width}px), route ${route}: document overflow`,
+      ).toBeLessThanOrEqual(dimensions.viewportWidth);
 
-        expect(
-          dimensions.bodyWidth,
-          `${viewport.name} (${viewport.width}px), route ${route}: body overflow`,
-        ).toBeLessThanOrEqual(dimensions.viewportWidth);
-      }
+      expect(
+        dimensions.bodyWidth,
+        `${viewport.name} (${viewport.width}px), route ${route}: body overflow`,
+      ).toBeLessThanOrEqual(dimensions.viewportWidth);
     }
+  }
 });
