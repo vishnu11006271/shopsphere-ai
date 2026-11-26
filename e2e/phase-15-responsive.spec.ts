@@ -10,7 +10,9 @@ const responsiveViewports = [
 
 const routes = ["/", "/products/1"];
 
-test("storefront routes remain within the viewport at the five QA widths", async ({ page }) => {
+test(
+  "storefront routes remain within the viewport at the five QA widths",
+  async ({ page }) => {
   for (const viewport of responsiveViewports) {
     await page.setViewportSize({
       width: viewport.width,
@@ -37,5 +39,5 @@ test("storefront routes remain within the viewport at the five QA widths", async
         `${viewport.name} (${viewport.width}px), route ${route}: body overflow`,
       ).toBeLessThanOrEqual(dimensions.viewportWidth);
     }
-  }
-});
+  },
+);
