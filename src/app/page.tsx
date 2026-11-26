@@ -40,7 +40,10 @@ export default function HomePage() {
     <main className="min-h-screen">
       <header className="sticky top-0 z-20 border-b border-black/5 bg-canvas/90 backdrop-blur">
         <div className="mx-auto flex w-full max-w-7xl min-w-0 items-center justify-between gap-2 px-4 py-4 sm:px-5 lg:px-8">
-          <a href="#top" className="shrink-0 whitespace-nowrap text-xl font-black tracking-tight">
+          <a
+            href="#top"
+            className="shrink-0 whitespace-nowrap text-xl font-black tracking-tight"
+          >
             shop<span className="text-brand">sphere</span>
             <span className="ml-1 align-top text-[10px] text-brand">AI</span>
           </a>
@@ -72,7 +75,9 @@ export default function HomePage() {
             >
               <Search size={18} />
             </Link>
-            <div className="hidden sm:block"><RecentlyViewedDropdown /></div>
+            <div className="hidden sm:block">
+              <RecentlyViewedDropdown />
+            </div>
             <Link
               href="/wishlist"
               aria-label="Wishlist"
@@ -92,7 +97,10 @@ export default function HomePage() {
                 </span>
               )}
             </Link>
-            <button aria-label="Open menu" className="shrink-0 rounded-full p-2 md:hidden">
+            <button
+              aria-label="Open menu"
+              className="shrink-0 rounded-full p-2 md:hidden"
+            >
               <Menu size={18} />
             </button>
           </div>
