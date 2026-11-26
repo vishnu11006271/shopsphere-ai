@@ -21,11 +21,47 @@ test("responsive routes fit the five QA viewports", async ({ page }) => {
       await page.goto(route);
       await expect(page.locator("#main-content")).toBeVisible();
 
-      const dimensions = await page.evaluate(() => ({
+      await page.evaluate(() => document.fonts.ready);
+
+      const diagnostics = await page.evaluate(() => {
+        const viewportWidth = document.documentElement.clientWidth;
+        const overflowingElements = Array.from(document.querySelectorAll("body *"))
+          .map((element) => {
+            const rect = element.getBoundingClientRect();
+            return {
+              tag: element.tagName.toLowerCase(),
+              className:
+                typeof element.className === "string" ? element.className : "",
+              id: element.id,
+              left: Math.round(rect.left),
+              right: Math.round(rect.right),
+              width: Math.round(rect.width),
+            };
+          })
+          .filter(
+            (element) =>
+              element.width > 0 &&
+              (element.right > viewportWidth + 1 || element.left < -1),
+          );
+
+        return {
+          viewportWidth,
+          documentWidth: document.documentElement.scrollWidth,
+          bodyWidth: document.body.scrollWidth,
+          overflowingElements,
+        };
+      });
+
+      console.log(
+        `Responsive diagnostics: ${viewport.name} - ${route}`,
+        JSON.stringify(diagnostics, null, 2),
+      );
+
+      const dimensions = {
         viewportWidth: window.innerWidth,
-        documentWidth: document.documentElement.scrollWidth,
-        bodyWidth: document.body.scrollWidth,
-      }));
+        documentWidth: diagnostics.documentWidth,
+        bodyWidth: diagnostics.bodyWidth,
+      };
 
       expect(
         dimensions.documentWidth,
