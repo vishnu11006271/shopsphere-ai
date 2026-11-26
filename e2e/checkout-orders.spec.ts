@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-test("customer can resume checkout after refresh, place a mock order, and track it", async ({ page }) => {
+test("customer can resume checkout after refresh, place a mock order, and track it", async ({
+  page,
+}) => {
   await page.goto("/products/1");
   await page.getByRole("button", { name: "Add to Cart", exact: true }).click();
   await page.goto("/cart");

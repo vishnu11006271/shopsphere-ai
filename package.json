@@ -11,7 +11,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "format": "npx --yes prettier@3.6.2 --write .",
+    "format:check": "npx --yes prettier@3.6.2 --check ."
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.0",

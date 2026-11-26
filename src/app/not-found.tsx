@@ -11,8 +11,8 @@ export default function NotFound() {
           We couldn&apos;t find that page
         </h1>
         <p className="mt-3 text-sm leading-6 text-muted">
-          The page may have moved, or the link may be out of date. Head back to
-          the storefront to continue exploring.
+          The page may have moved, or the link may be out of date. Head back to the
+          storefront to continue exploring.
         </p>
         <Link
           href="/"

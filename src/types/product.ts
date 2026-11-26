@@ -39,5 +39,14 @@ export interface Product {
   /** Optional variant metadata supplied by a future catalogue provider or local fixture. */
   variants?: ProductVariant[];
 }
-export interface ProductListResponse { products: Product[]; total: number; skip: number; limit: number; }
-export interface ProductCategory { slug: string; name: string; url: string; }
+export interface ProductListResponse {
+  products: Product[];
+  total: number;
+  skip: number;
+  limit: number;
+}
+export interface ProductCategory {
+  slug: string;
+  name: string;
+  url: string;
+}

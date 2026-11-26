@@ -23,7 +23,12 @@ export type RecommendationSignalKey =
   | "purchases"
   | "brandPreference";
 
-export interface PriceRangeSignal { min: number; max: number; average: number; sampleSize: number; }
+export interface PriceRangeSignal {
+  min: number;
+  max: number;
+  average: number;
+  sampleSize: number;
+}
 export interface RecommendationSignals {
   recentlyViewed: Product[];
   searchQueries: string[];
@@ -33,7 +38,10 @@ export interface RecommendationSignals {
   currentCategory?: string;
   enabledSignals: Record<RecommendationSignalKey, boolean>;
 }
-export interface RecommendationReason { label: string; detail: string; }
+export interface RecommendationReason {
+  label: string;
+  detail: string;
+}
 export interface RecommendedProduct {
   product: Product;
   strategy: RecommendationStrategy;

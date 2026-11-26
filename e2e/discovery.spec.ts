@@ -1,10 +1,14 @@
 import { expect, test } from "@playwright/test";
 
-test("product discovery route renders catalogue and filter controls", async ({ page }) => {
+test("product discovery route renders catalogue and filter controls", async ({
+  page,
+}) => {
   await page.goto("/products");
   await expect(page.getByRole("heading", { name: "Explore all products" })).toBeVisible();
   await expect(page.getByRole("combobox", { name: "Sort products" })).toBeVisible();
-  await expect(page.getByRole("complementary", { name: "Product filters" })).toBeVisible();
+  await expect(
+    page.getByRole("complementary", { name: "Product filters" }),
+  ).toBeVisible();
 });
 
 test("search submits a query to a shareable results URL", async ({ page }) => {
@@ -15,7 +19,9 @@ test("search submits a query to a shareable results URL", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Results for “phone”" })).toBeVisible();
 });
 
-test("search suggestions wait for the debounce interval before requesting", async ({ page }) => {
+test("search suggestions wait for the debounce interval before requesting", async ({
+  page,
+}) => {
   let searchRequests = 0;
   await page.goto("/products");
   await page.clock.install();
