@@ -58,7 +58,7 @@ test("responsive routes fit the five QA viewports", async ({ page }) => {
       );
 
       const dimensions = {
-        viewportWidth: window.innerWidth,
+        viewportWidth: diagnostics.viewportWidth,
         documentWidth: diagnostics.documentWidth,
         bodyWidth: diagnostics.bodyWidth,
       };
