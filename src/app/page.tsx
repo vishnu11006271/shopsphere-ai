@@ -39,8 +39,8 @@ export default function HomePage() {
   return (
     <main className="min-h-screen">
       <header className="sticky top-0 z-20 border-b border-black/5 bg-canvas/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
-          <a href="#top" className="text-xl font-black tracking-tight">
+        <div className="mx-auto flex w-full max-w-7xl min-w-0 items-center justify-between gap-2 px-4 py-4 sm:px-5 lg:px-8">
+          <a href="#top" className="shrink-0 whitespace-nowrap text-xl font-black tracking-tight">
             shop<span className="text-brand">sphere</span>
             <span className="ml-1 align-top text-[10px] text-brand">AI</span>
           </a>
@@ -55,7 +55,7 @@ export default function HomePage() {
               How it works
             </a>
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2">
             <Link
               href="/account"
               className="hidden items-center rounded-full px-3 py-2 text-sm font-semibold text-muted hover:bg-white hover:text-ink sm:inline-flex"
@@ -68,22 +68,22 @@ export default function HomePage() {
             <Link
               href="/products"
               aria-label="Browse products"
-              className="rounded-full p-3 hover:bg-white lg:hidden"
+              className="shrink-0 rounded-full p-2 hover:bg-white lg:hidden"
             >
               <Search size={18} />
             </Link>
-            <RecentlyViewedDropdown />
+            <div className="hidden sm:block"><RecentlyViewedDropdown /></div>
             <Link
               href="/wishlist"
               aria-label="Wishlist"
-              className="rounded-full p-3 hover:bg-white"
+              className="shrink-0 rounded-full p-2 hover:bg-white"
             >
               <Heart size={18} />
             </Link>
             <Link
               href="/cart"
               aria-label={`Cart, ${cartCount} items`}
-              className="relative rounded-full bg-white p-3"
+              className="relative shrink-0 rounded-full bg-white p-2"
             >
               <ShoppingBag size={18} />
               {cartCount > 0 && (
@@ -92,7 +92,7 @@ export default function HomePage() {
                 </span>
               )}
             </Link>
-            <button aria-label="Open menu" className="rounded-full p-3 md:hidden">
+            <button aria-label="Open menu" className="shrink-0 rounded-full p-2 md:hidden">
               <Menu size={18} />
             </button>
           </div>
