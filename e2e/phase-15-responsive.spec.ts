@@ -30,8 +30,7 @@ test("responsive routes fit the five QA viewports", async ({ page }) => {
             const rect = element.getBoundingClientRect();
             return {
               tag: element.tagName.toLowerCase(),
-              className:
-                typeof element.className === "string" ? element.className : "",
+              className: typeof element.className === "string" ? element.className : "",
               id: element.id,
               left: Math.round(rect.left),
               right: Math.round(rect.right),
