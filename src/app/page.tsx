@@ -3,7 +3,14 @@
 import Link from "next/link";
 
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Search, ShoppingBag, Sparkles, Heart, Menu } from "lucide-react";
+import {
+  ArrowRight,
+  Search,
+  ShoppingBag,
+  Sparkles,
+  Heart,
+  Menu,
+} from "lucide-react";
 import {
   productKeys,
   productService,
@@ -47,7 +54,7 @@ export default function HomePage() {
             shop<span className="text-brand">sphere</span>
             <span className="ml-1 align-top text-[10px] text-brand">AI</span>
           </a>
-          <nav className="hidden items-center gap-8 text-sm font-medium text-muted md:flex">
+          <nav className="hidden items-center gap-8 text-sm font-medium text-muted 2xl:flex">
             <a href="#discover" className="hover:text-ink">
               Discover
             </a>
@@ -61,21 +68,21 @@ export default function HomePage() {
           <div className="flex shrink-0 items-center gap-1 sm:gap-2">
             <Link
               href="/account"
-              className="hidden items-center rounded-full px-3 py-2 text-sm font-semibold text-muted hover:bg-white hover:text-ink sm:inline-flex"
+              className="hidden items-center rounded-full px-3 py-2 text-sm font-semibold text-muted hover:bg-white hover:text-ink xl:inline-flex"
             >
               Account
             </Link>
-            <div className="hidden w-full max-w-md lg:block">
+            <div className="hidden w-full max-w-md xl:block">
               <SearchBar compact />
             </div>
             <Link
               href="/products"
               aria-label="Browse products"
-              className="shrink-0 rounded-full p-2 hover:bg-white lg:hidden"
+              className="shrink-0 rounded-full p-2 hover:bg-white xl:hidden"
             >
               <Search size={18} />
             </Link>
-            <div className="hidden sm:block">
+            <div className="hidden xl:block">
               <RecentlyViewedDropdown />
             </div>
             <Link
